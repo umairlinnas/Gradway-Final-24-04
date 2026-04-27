@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const LOGO_URL = "https://i.ibb.co/3ykG4SjV/logo.png";
+const LOGO_URL = "https://media.licdn.com/dms/image/v2/D560BAQGirGJH6oI0AQ/company-logo_200_200/B56ZvAb6d1IYAM-/0/1768460102510?e=2147483647&v=beta&t=t76ITNGe8KPVlum51ou1M6C_TbF3bXIllV1rY6r9OUo";
 const TIKTOK_URL = "https://www.tiktok.com/@gradway_education?_r=1&_t=ZS-92huBpIVt6y";
 const WA_PHONE = "94775009929";
 const PHONE_DISPLAY = "+94 77 500 9929";
