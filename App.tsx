@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const LOGO_URL = "https://media.licdn.com/dms/image/v2/D560BAQGirGJH6oI0AQ/company-logo_200_200/B56ZvAb6d1IYAM-/0/1768460102510?e=2147483647&v=beta&t=t76ITNGe8KPVlum51ou1M6C_TbF3bXIllV1rY6r9OUo";
+const LOGO_URL = "https://i.ibb.co/3ykG4SjV/logo.png";
 const TIKTOK_URL = "https://www.tiktok.com/@gradway_education?_r=1&_t=ZS-92huBpIVt6y";
 const WA_PHONE = "94775009929";
 const PHONE_DISPLAY = "+94 77 500 9929";
@@ -422,8 +422,163 @@ const LegalModal = ({ type, onClose }: any) => {
                 <p className="text-[9px] font-bold text-slate-400 mt-1 uppercase">Education Consultancy Services – Sri Lanka</p>
                 <p className="text-[10px] font-bold text-slate-400 mt-6 bg-slate-50 inline-block px-4 py-1.5 rounded-full">Last Updated: 01/01/2026</p>
             </div>
-            <p className="text-base font-semibold text-[#1A1F2C]">Gradway (Private) Limited (“Gradway”, “we”, “our”, or “us”) is committed to protecting the privacy, confidentiality, and security of personal data entrusted to us.</p>
-            <p>This Privacy Policy explains how personal data is collected, used, disclosed, stored, and protected in accordance with the <strong>Personal Data Protection Act No. 9 of 2022 of Sri Lanka</strong>, and in line with internationally accepted data protection principles. By accessing our website, submitting enquiries, or engaging our services, you acknowledge that you have read and understood this Privacy Policy and consent to the practices described herein.</p>
+            <p className="text-sm font-medium text-slate-600">Gradway (Private) Limited (“Gradway”, “we”, “our”, or “us”) is committed to protecting the privacy, confidentiality, and security of personal data entrusted to us. This Privacy Policy explains how personal data is collected, used, disclosed, stored, and protected in accordance with the Personal Data Protection Act No. 9 of 2022 of Sri Lanka, and in line with internationally accepted data protection principles.</p>
+            <p className="text-sm font-medium text-slate-600">By accessing our website, submitting enquiries, or engaging our services, you acknowledge that you have read and understood this Privacy Policy and consent to the practices described herein.</p>
+
+            <section>
+                <NumberedSection num="1" title="Information Collection" color="amber" />
+                <p className="mb-4">We collect personal data only where it is lawful, necessary, and proportionate for the provision of education consultancy services.</p>
+                <p className="mb-4">The categories of personal data we may collect include:</p>
+                <div className="space-y-4 ml-4">
+                    <div>
+                        <p className="font-bold text-[#1A1F2C] text-xs uppercase mb-1">Personal and Contact Information</p>
+                        <p>Full name, date of birth, nationality, residential address, email address, phone number, passport and identification details (where required).</p>
+                    </div>
+                    <div>
+                        <p className="font-bold text-[#1A1F2C] text-xs uppercase mb-1">Academic and Professional Information</p>
+                        <p>Academic history, qualifications, transcripts, certificates, English language test results (IELTS, TOEFL, etc.), employment history, curriculum vitae, portfolios, and references (where applicable).</p>
+                    </div>
+                    <div>
+                        <p className="font-bold text-[#1A1F2C] text-xs uppercase mb-1">Financial and Compliance Information</p>
+                        <p>Proof of financial capacity, sponsorship details, payment records, visa and immigration documentation, police clearance certificates, and health-related information strictly where required for applications.</p>
+                    </div>
+                    <div>
+                        <p className="font-bold text-[#1A1F2C] text-xs uppercase mb-1">Communication and Technical Information</p>
+                        <p>Records of consultations and correspondence, IP address, browser and device details, website usage data, cookies, and analytics information used to ensure functionality, security, and service improvement.</p>
+                    </div>
+                </div>
+                <p className="mt-4">We do not collect personal data that is unrelated to the delivery of our services.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="2" title="Consent" color="amber" />
+                <p className="mb-4">Personal data is collected and processed with your explicit and informed consent, except where processing is otherwise permitted or required by law.</p>
+                <p className="mb-4">Consent is deemed to be provided when you:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Submit enquiry or application forms</li>
+                    <li>Contact us via email, phone, or messaging platforms</li>
+                    <li>Book or attend consultations</li>
+                    <li>Provide documentation for academic or visa processing</li>
+                    <li>Proceed with or confirm engagement of our services</li>
+                </ul>
+                <p className="mb-4">You acknowledge that:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Certain personal data is essential to assess eligibility and process applications</li>
+                    <li>Processing is required to comply with institutional, immigration, and regulatory obligations</li>
+                    <li>Withdrawal of consent may restrict or prevent continuation of services where processing is necessary to fulfil those obligations</li>
+                </ul>
+                <p>You may withdraw consent at any time by contacting us in writing. Withdrawal will not affect processing already lawfully carried out.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="3" title="Use of Personal Data" color="amber" />
+                <p className="mb-4">Personal data collected by Gradway is used solely for lawful and specified purposes, including:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Academic assessment and education pathway planning</li>
+                    <li>Course, institution, and destination recommendations</li>
+                    <li>Preparation and submission of applications</li>
+                    <li>Visa and immigration guidance and documentation support</li>
+                    <li>Communication of updates, requirements, and outcomes</li>
+                    <li>Internal record-keeping for compliance, quality assurance, and dispute resolution</li>
+                </ul>
+                
+                <div className="mt-8">
+                    <p className="font-bold text-[#1A1F2C] text-sm mb-4">3.1 Use of Information for Marketing and Success Announcements</p>
+                    <p className="mb-4">Gradway may share general success updates related to admissions or visa outcomes for informational and promotional purposes, to demonstrate service experience and track record.</p>
+                    <p className="mb-4">Such disclosures are limited, proportionate, and handled responsibly.</p>
+                    <p className="mb-4">Without additional consent, Gradway may share only general, non-sensitive information, including:</p>
+                    <ul className="list-disc ml-8 mb-4 space-y-1 text-xs">
+                        <li>Name of applicant</li>
+                        <li>Confirmation that a visa or admission has been granted</li>
+                        <li>Destination country</li>
+                        <li>Name of the institution and programme applied for</li>
+                        <li>Type or level of programme or visa</li>
+                        <li>Date on which the visa or admission was granted</li>
+                        <li>Validity period of the visa, where applicable</li>
+                    </ul>
+                    <p className="mb-4">With explicit prior consent from the student, Gradway may additionally share:</p>
+                    <ul className="list-disc ml-8 mb-4 space-y-1 text-xs">
+                        <li>Photographs or videos taken for promotional or marketing purposes</li>
+                        <li>Testimonials or statements provided voluntarily by the student</li>
+                    </ul>
+                    <p className="mb-4">Gradway does not publish passport numbers, identification numbers, full dates of birth, contact details, financial information, academic records, immigration documents, or any other sensitive personal data.</p>
+                    <p>Consent for promotional use is obtained separately and may be withdrawn at any time. Withdrawal will apply only to future promotional use and will not affect content already lawfully published.</p>
+                </div>
+                <p className="mt-4">Personal data is not used for purposes incompatible with those stated above.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="4" title="Disclosure to Third Parties" color="amber" />
+                <p className="mb-4">Personal data is disclosed only where necessary and lawful, and only to authorized parties directly involved in the study abroad process, including:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Universities, colleges, and education providers</li>
+                    <li>Embassies, visa offices, and immigration authorities</li>
+                    <li>Official application, verification, and compliance platforms</li>
+                    <li>Authorized service providers supporting documentation or processing</li>
+                </ul>
+                <p>Gradway does not sell, rent, trade, or disclose personal data to marketing agencies, advertisers, or unrelated third parties.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="5" title="Cross-Border Data Transfers" color="amber" />
+                <p className="mb-4">As an international education consultancy, personal data may be transferred outside Sri Lanka to institutions or authorities in destination countries.</p>
+                <p className="mb-4">Such transfers:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Occur only where required for admissions or visa processing</li>
+                    <li>Are limited to recognized institutions and authorities</li>
+                    <li>Are carried out with appropriate safeguards to ensure data protection</li>
+                </ul>
+            </section>
+
+            <section>
+                <NumberedSection num="6" title="Data Retention" color="amber" />
+                <p className="mb-4">Personal data is retained only for as long as necessary to:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Deliver consultancy services</li>
+                    <li>Meet institutional, regulatory, or legal requirements</li>
+                    <li>Maintain records for compliance and dispute resolution</li>
+                </ul>
+                <p>Once no longer required, data is securely deleted, anonymised, or archived in accordance with lawful retention practices.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="7" title="Data Security" color="amber" />
+                <p className="mb-4">We implement appropriate technical and administrative to protect personal data, including controlled document handling, and access limited to authorised personnel only.</p>
+                <p>While reasonable measures are taken, no system can be guaranteed to be entirely secure.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="8" title="Cookies and Website Usage" color="amber" />
+                <p>Our website may use cookies and analytics tools to improve performance, understand user interaction, and enhance user experience. Users may manage cookie preferences through their browser settings.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="9" title="Rights of Data Subjects" color="amber" />
+                <p className="mb-4">In accordance with applicable law, you may request:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Access to personal data held by us</li>
+                    <li>Correction of inaccurate or incomplete data</li>
+                    <li>Deletion of personal data, subject to legal and service obligations</li>
+                    <li>Restriction of certain processing activities</li>
+                </ul>
+                <p>Requests may be made using the contact details below. Identity verification may be required.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="10" title="Children and Minors" color="amber" />
+                <p>Where services are provided to individuals under 18 years of age, verifiable parental or guardian consent is required. Only personal data necessary for service delivery is processed, and parents or guardians may request access to or correction of the minor’s data.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="11" title="Third-Party Websites" color="amber" />
+                <p>Our website may contain links to external websites. Gradway is not responsible for the content, security, or privacy practices of third-party sites.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="12" title="Changes to This Policy" color="amber" />
+                <p>This Privacy Policy may be updated periodically to reflect legal, regulatory, or operational changes. Updated versions will be published on our website. Continued use of our services constitutes acceptance of the revised policy.</p>
+            </section>
+
             <LegalFooter colorClass="text-amber-500" sectionNum="13" sectionColor="amber" />
         </div>
     );
@@ -436,6 +591,126 @@ const LegalModal = ({ type, onClose }: any) => {
                 <p className="text-[10px] font-bold text-slate-400 mt-6 bg-slate-50 inline-block px-4 py-1.5 rounded-full">Effective Date: 01/01/2026</p>
             </div>
             <p className="text-base font-semibold text-[#1A1F2C]">These Terms of Service (“Terms”) govern the access to and use of services provided by Gradway (Private) Limited (“Gradway”, “we”, “our”, or “us”). By accessing our website, engaging in consultations, submitting information, or using any of our services, you agree to be bound by these Terms in their entirety.</p>
+
+            <section>
+                <NumberedSection num="1" title="Scope of Services" color="blue" />
+                <p className="mb-4">Gradway provides professional education consultancy services, which may include:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Academic profile assessment and counselling</li>
+                    <li>Course, institution, and destination guidance</li>
+                    <li>Application preparation and submission support</li>
+                    <li>Student visa and migration-related documentation guidance</li>
+                    <li>Pre-departure and post-arrival advisory support</li>
+                </ul>
+                <p className="mb-4">Gradway acts solely as an advisory and facilitation service provider. All final decisions regarding admissions, visas, immigration approvals, scholarships, enrolment conditions, or timelines are made exclusively by universities, colleges, embassies, and immigration authorities.</p>
+                <p>Gradway does not have the authority to influence, guarantee, or override such decisions.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="2" title="Client Responsibilities and Accuracy of Information" color="blue" />
+                <p className="mb-4">Clients are solely responsible for ensuring that all information and documentation provided to Gradway is:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Accurate, complete, and truthful</li>
+                    <li>Authentic and verifiable</li>
+                    <li>Submitted within the timelines communicated</li>
+                </ul>
+                <p className="mb-4">This includes, but is not limited to, academic records, financial documents, identity documents, and visa-related information.</p>
+                <p className="mb-4">Submission of false, misleading, altered, or fraudulent information may result in immediate termination of services without refund, and Gradway reserves the right to withdraw representation without further obligation.</p>
+                <p>Gradway shall not be liable for outcomes arising from inaccurate, incomplete, or delayed information provided by the client.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="3" title="No Guarantee of Outcomes" color="blue" />
+                <p className="mb-4">While Gradway provides professional guidance and maintains quality standards, no guarantees are made or implied regarding:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Admission Outcome</li>
+                    <li>Visa approvals</li>
+                    <li>Processing timelines</li>
+                    <li>Scholarships or funding</li>
+                    <li>Employment or post-study outcomes</li>
+                </ul>
+                <p>Outcomes are subject to external factors beyond Gradway’s control, including institutional criteria, immigration regulations, policy changes, and individual applicant profiles.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="4" title="Fees and Third-Party Costs" color="blue" />
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Consultancy fees, where applicable, will be communicated separately</li>
+                    <li>Fees paid to Gradway are generally non-refundable unless explicitly stated in writing</li>
+                    <li>Third-party costs (including application fees, visa fees, medical tests, courier charges, and institutional deposits) are payable by the client and are not controlled by Gradway</li>
+                </ul>
+                <p>Gradway is not responsible for changes in third-party fees, refund policies, or payment timelines.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="5" title="Limitation of Liability" color="blue" />
+                <p className="mb-4">To the fullest extent permitted by law:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Gradway shall not be liable for indirect, incidental, consequential, or economic losses</li>
+                    <li>Gradway’s liability, if any, shall be limited to the amount paid to Gradway for consultancy services</li>
+                </ul>
+                <p className="mb-4">Gradway shall not be responsible for losses arising from:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Visa refusals or delays</li>
+                    <li>Admission denials</li>
+                    <li>Policy or regulatory changes</li>
+                    <li>Decisions or actions of universities, embassies, or authorities</li>
+                </ul>
+            </section>
+
+            <section>
+                <NumberedSection num="6" title="Confidentiality and Data Use" color="blue" />
+                <p className="mb-4">Gradway handles personal information in accordance with its Privacy Policy. Client data is used strictly for service delivery, compliance, communication, and lawful operational purposes.</p>
+                <p>Clients consent to the sharing of necessary information with relevant institutions and authorities as required to provide services.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="7" title="Intellectual Property" color="blue" />
+                <p className="mb-4">All original content created by Gradway, including website text, service descriptions, layouts, branding elements, graphics, process explanations, and proprietary materials, is the intellectual property of Gradway (Private) Limited unless otherwise stated.</p>
+                <p className="mb-6">Unauthorized reproduction, distribution, or misuse of Gradway’s original content is prohibited.</p>
+                
+                <div className="mt-8 bg-blue-50/50 p-8 rounded-[2rem] border border-blue-100">
+                    <p className="font-bold text-[#1A1F2C] text-sm mb-4">7.1 Logo Usage and Fair Use Disclaimer</p>
+                    <p className="mb-4">University names, institutional names, logos, trademarks, crests, and brand identifiers displayed on this website are the property of their respective owners.</p>
+                    <p className="mb-4">Such logos and identifiers are used by Gradway solely for informational and reference purposes, including identifying study destinations, institutions, and publicly available academic pathways.</p>
+                    <p className="mb-4 font-semibold uppercase text-[10px] tracking-widest text-blue-600">Use of such logos does not imply:</p>
+                    <ul className="list-disc ml-8 mb-4 space-y-1">
+                        <li>Any official partnership, sponsorship, or endorsement</li>
+                        <li>Exclusive representation or authority to act on behalf of the institution</li>
+                    </ul>
+                    <p>Gradway does not alter or misrepresent third-party logos. All usage is intended to fall within accepted principles of fair use and nominative reference. Rights holders may contact Gradway to request review or removal where appropriate.</p>
+                </div>
+            </section>
+
+            <section>
+                <NumberedSection num="8" title="Suspension or Termination of Services" color="blue" />
+                <p className="mb-4">Gradway reserves the right to suspend or terminate services without liability where:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1 text-xs uppercase font-bold tracking-wider">
+                    <li>False or misleading information is provided</li>
+                    <li>Required documentation is withheld</li>
+                    <li>These Terms or ethical standards are violated</li>
+                    <li>Client conduct is abusive, unlawful, or obstructive</li>
+                </ul>
+                <p className="mt-4">Termination does not relieve the client of any outstanding obligations.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="9" title="Amendments to Terms" color="blue" />
+                <p className="mb-4">Gradway reserves the right to modify these Terms at any time. Updated Terms will be published on our website and take effect immediately upon publication.</p>
+                <p>Continued use of our services constitutes acceptance of the revised Terms.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="10" title="Governing Law and Jurisdiction" color="blue" />
+                <p className="mb-4">These Terms shall be governed by and construed in accordance with the laws of the Democratic Socialist Republic of Sri Lanka.</p>
+                <p>Any disputes arising from these Terms shall be subject to the exclusive jurisdiction of the courts of Colombo, Sri Lanka.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="11" title="Acceptance of Terms" color="blue" />
+                <p>Engaging with Gradway staff, booking consultations, submitting documents, proceeding with profile reviews or receiving any services from us constitutes full and unconditional acceptance of these Terms of Service.</p>
+            </section>
+
             <LegalFooter colorClass="text-blue-600" sectionNum="12" sectionColor="blue" />
         </div>
     );
@@ -448,6 +723,123 @@ const LegalModal = ({ type, onClose }: any) => {
                 <p className="text-[10px] font-bold text-slate-400 mt-6 bg-slate-50 inline-block px-4 py-1.5 rounded-full">Effective Date: 01/01/2026</p>
             </div>
             <p className="text-base font-semibold text-[#1A1F2C]">This Refund & Cancellation Policy outlines the conditions under which refunds, cancellations, and service withdrawals are handled by Gradway (Private) Limited (“Gradway”, “we”, “our”, or “us”). By engaging our services, you acknowledge and agree to the terms set out below.</p>
+            
+            <section>
+                <NumberedSection num="1" title="Nature of Consultancy Services" color="emerald" />
+                <p className="mb-4">Gradway provides professional education consultancy and advisory services. These services involve time, expertise, planning, document review, communication with institutions, and strategic guidance.</p>
+                <p className="mb-4 font-semibold text-[#1A1F2C]">As such:</p>
+                <ul className="list-disc ml-8 space-y-1">
+                    <li>Consultancy services are intangible and time-based</li>
+                    <li>Value is delivered progressively from the commencement of engagement</li>
+                    <li>Outcomes are influenced by third parties such as universities and embassies</li>
+                </ul>
+            </section>
+
+            <section>
+                <NumberedSection num="2" title="Refund Policy" color="emerald" />
+                <div className="mt-4">
+                    <p className="font-bold text-[#1A1F2C] text-sm mb-2">2.1 General Rule</p>
+                    <p className="mb-4">Unless explicitly agreed in writing, fees paid to Gradway are non-refundable once services have commenced.</p>
+                    <p className="mb-4">This includes, but is not limited to:</p>
+                    <ul className="list-disc ml-8 mb-4 space-y-1 text-xs">
+                        <li>Profile evaluations and counselling sessions</li>
+                        <li>Course and university mapping</li>
+                        <li>Application preparation or submission</li>
+                        <li>Visa guidance and documentation support</li>
+                        <li>Communication with institutions or authorities</li>
+                    </ul>
+                </div>
+                <div className="mt-8">
+                    <p className="font-bold text-[#1A1F2C] text-sm mb-2">2.2 Non-Refundable Circumstances</p>
+                    <p className="mb-4">Refunds will not be issued in the following situations:</p>
+                    <ul className="list-disc ml-8 mb-4 space-y-1 text-xs">
+                        <li>Change of mind by the client</li>
+                        <li>Visa refusal or application rejection</li>
+                        <li>Admission denial by an institution</li>
+                        <li>Delays caused by third parties</li>
+                        <li>Changes in immigration or institutional policies</li>
+                        <li>Client’s failure to provide accurate, complete, or timely information</li>
+                        <li>Client withdrawal after services have commenced</li>
+                        <li>Termination due to submission of false or misleading documents</li>
+                    </ul>
+                </div>
+                <div className="mt-8">
+                    <p className="font-bold text-[#1A1F2C] text-sm mb-2">2.3 Exceptional Refunds</p>
+                    <p className="mb-4">In limited and exceptional circumstances, Gradway may consider a refund at its sole discretion, provided that:</p>
+                    <ul className="list-disc ml-8 mb-4 space-y-1 text-xs">
+                        <li>The request is submitted in writing</li>
+                        <li>Services have not commenced</li>
+                        <li>No third-party costs have been incurred</li>
+                        <li>Approval is provided explicitly by Gradway management</li>
+                    </ul>
+                    <p className="mt-4 font-bold text-emerald-600 uppercase text-[10px] tracking-widest">Any approved refund:</p>
+                    <p className="ml-4 italic text-xs">Will be processed within a reasonable timeframe</p>
+                </div>
+            </section>
+
+            <section>
+                <NumberedSection num="3" title="Third-Party Fees and Payments" color="emerald" />
+                <p className="mb-4">Fees paid to third parties are non-refundable and are governed by the policies of those entities.</p>
+                <p className="mb-4">This includes:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>University or college application fees</li>
+                    <li>Visa application fees</li>
+                    <li>Medical examination fees</li>
+                    <li>Courier, translation, or certification charges</li>
+                </ul>
+                <p>Gradway does not control third-party refund decisions and bears no liability for such costs.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="4" title="Cancellation by the Client" color="emerald" />
+                <p className="mb-4">Clients may cancel services by providing written notice to Gradway.</p>
+                <p className="mb-4 font-semibold text-[#1A1F2C]">However:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Cancellation does not automatically entitle the client to a refund</li>
+                    <li>Outstanding balances, if any, remain payable</li>
+                </ul>
+            </section>
+
+            <section>
+                <NumberedSection num="5" title="Cancellation or Termination by Gradway" color="emerald" />
+                <p className="mb-4">Gradway reserves the right to suspend or terminate services without refund where:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1 text-xs uppercase font-bold tracking-wider">
+                    <li>False, fraudulent, or misleading information is provided</li>
+                    <li>Required documentation is withheld or delayed</li>
+                    <li>Client conduct is abusive, unethical, or unlawful</li>
+                    <li>Terms of Service or policies are breached</li>
+                </ul>
+                <p className="mt-4">Such termination does not waive any outstanding payment obligations.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="6" title="No Guarantee Clause" color="emerald" />
+                <p className="mb-4">Refunds are not linked to outcomes. Gradway does not guarantee:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Admission outcomes</li>
+                    <li>Visa approvals</li>
+                    <li>Processing timelines</li>
+                    <li>Scholarships or funding</li>
+                </ul>
+                <p className="mt-4">Unfavourable outcomes do not constitute grounds for refunds.</p>
+            </section>
+
+            <section>
+                <NumberedSection num="7" title="Refund Processing Method" color="emerald" />
+                <p className="mb-4">Where a refund is approved:</p>
+                <ul className="list-disc ml-8 mb-4 space-y-1">
+                    <li>Refunds will be issued using the original payment method where possible</li>
+                    <li>Processing timelines may vary depending on banks or payment providers</li>
+                    <li>Administrative or transaction fees may be deducted</li>
+                </ul>
+            </section>
+
+            <section>
+                <NumberedSection num="8" title="Policy Amendments" color="emerald" />
+                <p className="mb-4">Gradway reserves the right to update or modify this Refund & Cancellation Policy at any time. Updated versions will be published on our website and will take effect immediately.</p>
+                <p>Continued use of our services constitutes acceptance of the updated policy.</p>
+            </section>
+
             <LegalFooter colorClass="text-emerald-600" sectionNum="9" sectionColor="emerald" />
         </div>
     );
@@ -627,7 +1019,20 @@ const Footer = ({ onModal, onNavigate, onSetView }: any) => {
                 </div>
             </div>
             <div className="container mx-auto px-4 lg:px-12 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">© 2025 Gradway (Private) Limited. All rights reserved.</p>
+                <div className="space-y-1 text-center md:text-left">
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">© 2025 Gradway (Pvt) Ltd. All rights reserved.</p>
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                        Site made by -{" "}
+                        <a
+                            href="https://www.instagram.com/powerhouse360.marketing"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:text-white transition-colors"
+                        >
+                            Powerhouse360.Marketing
+                        </a>
+                    </p>
+                </div>
                 <div className="flex flex-wrap justify-center gap-8 text-[10px] font-black uppercase tracking-widest text-slate-500">
                     <button onClick={() => onModal('privacy')} className="hover:text-white transition-colors">Privacy Policy</button>
                     <button onClick={() => onModal('terms')} className="hover:text-white transition-colors">Terms of Service</button>

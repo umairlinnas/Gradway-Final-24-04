@@ -446,12 +446,6 @@ export const FULL_FAQ = [
         question: "Why should I use an education consultant like Gradway?",
         answer: "We navigate complex requirements, provide SOP guidance, offer scholarship access, and maintain high visa success rates, saving you significant time and potential rejection."
     },
-    {
-        id: 29,
-        category: 'Consultants',
-        question: "Are Gradway's services free?",
-        answer: "Yes! Most of our services (consultation, application, visa guidance) are free for students. We receive commissions from partner universities upon your successful enrollment."
-    },
     // Destinations
     {
         id: 30,
@@ -466,4 +460,4 @@ export const FULL_FAQ = [
         answer: "Prestigious historic universities, shorter durations (1-year Master's), 2-year post-study work rights, and no need for SAT/GRE for most programs."
     }
 ];
-export const MAIN_FAQ = FULL_FAQ.filter(f => [1, 2, 5, 12, 16, 29].includes(f.id));
+export const MAIN_FAQ = FULL_FAQ.filter(f => [1, 2, 5, 12, 16, 28].includes(f.id));
