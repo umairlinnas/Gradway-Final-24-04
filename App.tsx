@@ -20,8 +20,9 @@ import {
     ArrowUpRight, GraduationCap, CircleCheck, Users, Euro, Play, Palette, History, Utensils
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import gradwayLogo from './src/assets/images/gradway-logo.png';
 
-const LOGO_URL = "/logo.png";
+const LOGO_URL = gradwayLogo;
 const TIKTOK_URL = "https://www.tiktok.com/@gradway_education?_r=1&_t=ZS-92huBpIVt6y";
 const WA_PHONE = "94775009929";
 const PHONE_DISPLAY = "+94 77 500 9929";
