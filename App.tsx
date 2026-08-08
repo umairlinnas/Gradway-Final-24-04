@@ -3,6 +3,7 @@ import { DESTINATIONS, SERVICES, SUCCESS_STORIES, MAIN_FAQ, FULL_FAQ, UK_UNIVERS
 import { getGeminiResponse } from '@/services/geminiService';
 import { ScrollNavigation } from '@/components/ui/scroll-navigation-menu';
 import { OfferCarousel } from '@/components/ui/offer-carousel';
+import { StudentSuccessCarousel } from '@/components/ui/student-success-carousel';
 import { BentoExperience, GermanyBentoExperience, FranceBentoExperience, IrelandBentoExperience } from '@/components/ui/bento-grid-experience';
 import { CanadaBentoExperience } from '@/components/ui/canada-bento-grid';
 import { GenericDestinationPage } from '@/components/pages/GenericDestinationPage';
@@ -3264,24 +3265,14 @@ const App = () => {
             </section>
 
             <section id="stories" className="py-24 bg-[#0a0d14] text-white scroll-mt-[76px]">
-                 <div className="container mx-auto px-4 lg:px-12 text-center mb-16">
+                 <div className="container mx-auto px-4 lg:px-12 text-center mb-12">
                     <SectionBadge text="Real Stories" lightVariant />
-                    <h2 className="text-4xl md:text-5xl font-black mb-6 uppercase tracking-tight">Student Success Stories</h2>
+                    <h2 className="text-4xl md:text-5xl font-black mb-4 uppercase tracking-tight">Student Success Stories</h2>
+                    <p className="text-slate-400 text-sm md:text-base font-medium max-w-xl mx-auto">
+                        Discover inspiring journeys from students who achieved their study and migration dreams with Gradway.
+                    </p>
                  </div>
-                 <div className="container mx-auto px-4 lg:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {SUCCESS_STORIES.map((story, i) => (
-                        <div key={i} className="bg-[#111827] p-8 rounded-[2.5rem] border border-white/5 group flex flex-col relative overflow-hidden">
-                            <div className="flex gap-1 mb-8">
-                                {[...Array(5)].map((_, idx) => <i key={idx} className="fa-solid fa-star text-amber-500 text-[10px]" />)}
-                            </div>
-                            <p className="text-slate-200 text-sm leading-relaxed mb-10 flex-1 font-medium italic">"{story.quote}"</p>
-                            <div className="mt-auto pt-8 border-t border-white/5">
-                                <h4 className="font-black text-lg mb-1 tracking-tight">{story.name}</h4>
-                                <p className="text-slate-500 text-[9px] font-black uppercase tracking-widest">{story.tag} • {story.university}</p>
-                            </div>
-                        </div>
-                    ))}
-                 </div>
+                 <StudentSuccessCarousel />
             </section>
 
             <section id="contact" className="py-24 bg-slate-50 scroll-mt-[76px]">

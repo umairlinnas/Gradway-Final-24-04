@@ -239,32 +239,35 @@ export const SUCCESS_STORIES = [
         name: 'Dinuka Perera',
         university: 'United Kingdom',
         quote: "Honestly super thankful to Gradway. I had no idea where to start, but they guided me so well from Day 1. Today I'm finally in the UK because of them. Highly recommend!",
-        image: 'https://i.pravatar.cc/150?u=dinuka',
-        tag: 'Msc in Business Management'
+        tag: 'MSc in Business Management'
     },
     {
         id: 2,
         name: 'Akila Silva',
         university: 'United Kingdom',
         quote: "Big thanks to the Gradway team. They handled my application, visa, everything without any stress for me. Really appreciate the support machan, thank you so much!",
-        image: 'https://i.pravatar.cc/150?u=hashini',
-        tag: 'MA in Global Business And Management'
+        tag: 'MA in Global Business and Management'
     },
     {
         id: 3,
         name: 'Tharmila Yoganathan',
         university: 'United Kingdom',
         quote: "I'm so happy. Never thought I'd actually make it to the UK, but they kept supporting me and helping with every small detail.",
-        image: 'https://i.pravatar.cc/150?u=tharusha',
-        tag: 'Bsc in Computer Sciece'
+        tag: 'BSc in Computer Science'
     },
     {
         id: 4,
         name: 'Isuru Jayasuriya',
         university: 'United Kingdom',
         quote: "Very friendly staff, quick replies, and they know exactly what to do. Thanks a lot for helping me achieve this dream!",
-        image: 'https://i.pravatar.cc/150?u=isuru',
-        tag: 'Bsc in Civil Engineering'
+        tag: 'BSc in Civil Engineering'
+    },
+    {
+        id: 5,
+        name: 'Anne Nethra',
+        university: 'United Kingdom',
+        quote: "I had an excellent experience with this consultancy. They handled my mom's visa process from start to finish with great care and professionalism. They guided us through every step, explained everything clearly, and made the entire process smooth and stress-free.\n\nThe best part was that my mom's visa was approved in just one day! Throughout the process, they were always available to help. Even outside office hours, they responded to our calls and messages and supported us whenever we needed assistance.\n\nThank you so much for your outstanding service and dedication. I truly appreciate all your hard work and highly recommend this consultancy to anyone looking for reliable visa assistance.",
+        tag: 'Graduate Visit Visa'
     }
 ];
 export const FULL_FAQ = [
