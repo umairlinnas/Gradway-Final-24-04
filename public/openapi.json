@@ -1,0 +1,117 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Gradway Education Consultancy API",
+    "description": "Machine-readable API for Gradway (Pvt) Ltd - Colombo, Sri Lanka study abroad consultancy services, program evaluations, and inquiry verification.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Gradway Admissions Team",
+      "email": "info@gradwayedu.com",
+      "url": "https://gradwayedu.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://gradwayedu.com",
+      "description": "Production Server"
+    }
+  ],
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Health Check",
+        "description": "Returns current backend status and operational timestamp.",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "ok" },
+                    "timestamp": { "type": "string", "format": "date-time" },
+                    "service": { "type": "string", "example": "Gradway Secure Backend" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/upload/validate": {
+      "post": {
+        "summary": "Validate Academic Document Upload",
+        "description": "Validates binary file signatures, size boundaries, and MIME types for academic transcripts, SOPs, and financial docs.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["fileName", "mimeType", "base64Content"],
+                "properties": {
+                  "fileName": { "type": "string", "example": "academic_transcript.pdf" },
+                  "mimeType": { "type": "string", "example": "application/pdf" },
+                  "base64Content": { "type": "string", "description": "Base64-encoded document data" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Document validated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "valid": { "type": "boolean", "example": true },
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation failed due to invalid signature or size"
+          }
+        }
+      }
+    },
+    "/llms.txt": {
+      "get": {
+        "summary": "Agent Documentation & LLM Discovery",
+        "description": "Structured Markdown overview for AI agents, crawlers, and LLMs outlining destinations, services, and admission processes.",
+        "responses": {
+          "200": {
+            "description": "Plaintext LLM guidance document",
+            "content": {
+              "text/plain": {
+                "schema": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/api-catalog": {
+      "get": {
+        "summary": "API Catalog",
+        "description": "RFC 9727 API catalog listing machine-readable descriptors for discovery.",
+        "responses": {
+          "200": {
+            "description": "API Catalog Linkset JSON",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

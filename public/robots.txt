@@ -36,4 +36,4 @@ User-agent: meta-externalagent
 Allow: /
 
 # Sitemap Location
-Sitemap: https://gradway.lk/sitemap.xml
+Sitemap: https://gradwayedu.com/sitemap.xml

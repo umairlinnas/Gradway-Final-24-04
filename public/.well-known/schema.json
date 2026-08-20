@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gradwayedu.com/.well-known/schema.json",
+  "title": "Gradway Consultancy Schema",
+  "description": "Schema definition for Gradway study abroad inquiries and academic profiling services.",
+  "type": "object",
+  "properties": {
+    "organization": {
+      "type": "string",
+      "const": "Gradway (Pvt) Ltd"
+    },
+    "country": {
+      "type": "string",
+      "const": "Sri Lanka"
+    },
+    "destinations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": ["United Kingdom", "Germany", "France", "Canada", "Australia", "USA", "Ireland", "New Zealand", "Netherlands", "Sweden", "Finland"]
+    },
+    "services": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [
+        "University & Course Selection",
+        "SOP & Academic Resume Review",
+        "Student Visa Guidance & Document Filing",
+        "Scholarship Discovery & Application",
+        "Pre-Departure Briefings & Accommodation Support"
+      ]
+    }
+  }
+}

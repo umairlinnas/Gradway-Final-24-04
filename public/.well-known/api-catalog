@@ -1,0 +1,34 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://gradwayedu.com/",
+      "service-desc": [
+        {
+          "href": "https://gradwayedu.com/openapi.json",
+          "type": "application/json"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://gradwayedu.com/llms.txt",
+          "type": "text/plain"
+        }
+      ],
+      "describedby": [
+        {
+          "href": "https://gradwayedu.com/.well-known/schema.json",
+          "type": "application/json"
+        }
+      ]
+    }
+  ],
+  "apis": [
+    {
+      "name": "Gradway Study Abroad API",
+      "description": "API services for international university admissions and file evaluations.",
+      "service-desc": "/openapi.json",
+      "service-doc": "/llms.txt",
+      "status": "active"
+    }
+  ]
+}

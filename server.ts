@@ -108,7 +108,7 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
-  // Security Headers Middleware (Section 5 Security Audit)
+  // Security Headers & Discovery Middleware (Section 5 Security Audit + RFC 8288 / RFC 9727 Discovery)
   app.use((req, res, next) => {
     // HSTS (max-age=2 years, includeSubDomains, preload)
     res.setHeader("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
@@ -118,15 +118,25 @@ async function startServer() {
     res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
     // Hardware and feature restrictions
     res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
-    // Content Security Policy (allows preview iframing in AI Studio)
+    // RFC 8288 & RFC 9727 Agent Discovery Link Headers
+    res.setHeader(
+      "Link",
+      [
+        '</.well-known/api-catalog>; rel="api-catalog"',
+        '</openapi.json>; rel="service-desc"; type="application/json"',
+        '</llms.txt>; rel="service-doc"; type="text/plain"',
+        '</.well-known/schema.json>; rel="describedby"; type="application/json"'
+      ].join(", ")
+    );
+    // Content Security Policy (allows preview iframing in AI Studio and Google Analytics tracking)
     res.setHeader(
       "Content-Security-Policy",
       "default-src 'self'; " +
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://esm.sh; " +
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://esm.sh https://www.googletagmanager.com; " +
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.tailwindcss.com; " +
       "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; " +
-      "img-src 'self' data: https: blob:; " +
-      "connect-src 'self' https://esm.sh https://generativelanguage.googleapis.com; " +
+      "img-src 'self' data: https: blob: https://www.googletagmanager.com https://*.google-analytics.com; " +
+      "connect-src 'self' https://esm.sh https://generativelanguage.googleapis.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; " +
       "frame-src 'self' https:; " +
       "frame-ancestors *;"
     );
@@ -135,6 +145,31 @@ async function startServer() {
 
   app.use(cors());
   app.use(express.json({ limit: "5mb" }));
+
+  // Serve RFC 9727 Agent & Machine-Readable Discovery Endpoints
+  app.get("/.well-known/api-catalog", (req, res) => {
+    const catalogPath = path.join(process.cwd(), "public", ".well-known", "api-catalog");
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    res.sendFile(catalogPath, { dotfiles: "allow" });
+  });
+
+  app.get("/openapi.json", (req, res) => {
+    const openapiPath = path.join(process.cwd(), "public", "openapi.json");
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    res.sendFile(openapiPath, { dotfiles: "allow" });
+  });
+
+  app.get("/.well-known/schema.json", (req, res) => {
+    const schemaPath = path.join(process.cwd(), "public", ".well-known", "schema.json");
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    res.sendFile(schemaPath, { dotfiles: "allow" });
+  });
+
+  app.get("/llms.txt", (req, res) => {
+    const llmsPath = path.join(process.cwd(), "public", "llms.txt");
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.sendFile(llmsPath, { dotfiles: "allow" });
+  });
 
   // Initialize Database with Parameterized Queries
   await initializeDatabase();
