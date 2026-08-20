@@ -9,11 +9,11 @@ const WA_PREFILLED_MSG = encodeURIComponent("Hi, I’m interested in studying ab
 const WA_LINK = `https://wa.me/${WA_PHONE}?text=${WA_PREFILLED_MSG}`;
 
 const defaultMenuItems = [
-    { id: 1, title: "Home", url: "top", icon: <Home className="w-4 h-4" /> },
-    { id: 2, title: "About Us", url: "aboutus", icon: <User className="w-4 h-4" /> },
-    { id: 3, title: "Services", url: "services", icon: <Settings className="w-4 h-4" /> },
-    { id: 4, title: "Destinations", url: "destinations", icon: <Info className="w-4 h-4" /> },
-    { id: 5, title: "Stories", url: "stories", icon: <Quote className="w-4 h-4" /> }
+    { id: 1, title: "Home", url: "top", icon: <Home className="w-4 h-4" aria-hidden="true" /> },
+    { id: 2, title: "About Us", url: "aboutus", icon: <User className="w-4 h-4" aria-hidden="true" /> },
+    { id: 3, title: "Services", url: "services", icon: <Settings className="w-4 h-4" aria-hidden="true" /> },
+    { id: 4, title: "Destinations", url: "destinations", icon: <Info className="w-4 h-4" aria-hidden="true" /> },
+    { id: 5, title: "Stories", url: "stories", icon: <Quote className="w-4 h-4" aria-hidden="true" /> }
 ];
 
 export const ScrollNavigation = ({ menuItems = defaultMenuItems, className = "", logoUrl = "", onNavigate }: any) => {
@@ -60,12 +60,21 @@ export const ScrollNavigation = ({ menuItems = defaultMenuItems, className = "",
     };
 
     useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape" && isMenuOpen) {
+                setIsMenuOpen(false);
+            }
+        };
         if (isMenuOpen) {
             document.body.style.overflow = 'hidden';
+            window.addEventListener("keydown", handleKeyDown);
         } else {
             document.body.style.overflow = 'unset';
         }
-        return () => { document.body.style.overflow = 'unset'; };
+        return () => {
+            document.body.style.overflow = 'unset';
+            window.removeEventListener("keydown", handleKeyDown);
+        };
     }, [isMenuOpen]);
 
     const menuVariants: Variants = {
@@ -102,63 +111,65 @@ export const ScrollNavigation = ({ menuItems = defaultMenuItems, className = "",
 
     return (
         <>
-            <nav className={cn("fixed top-0 left-0 right-0 z-[200] transition-all duration-500 ease-in-out", isScrolled ? "py-3 bg-white/75 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.06)] border-b border-slate-200/50" : "py-5 md:py-6 bg-transparent border-transparent shadow-none", className)}>
-                <div className="max-w-7xl mx-auto px-6 lg:px-12">
-                    <div className="flex items-center justify-between h-12 md:h-14">
-                        <motion.div className="flex-shrink-0 origin-left" animate={{ scale: isScrolled ? 1.05 : 1 }} transition={{ type: "spring", stiffness: 300, damping: 25 }}>
-                            <a href="#top" onClick={(e) => scrollToSection(e, 'top')} className="flex items-center gap-3 group">
-                                <div className="w-10 h-10 md:w-11 md:h-11 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-1.5 border border-slate-100 group-hover:shadow-xl transition-all">
-                                    {logoUrl ? <img src={logoUrl} alt="Gradway" className="w-full h-full object-contain" /> : null}
-                                </div>
-                                <span className="text-sm md:text-base font-black uppercase tracking-tight text-[#1A1F2C] leading-none">
-                                    Gradway (Pvt) Ltd
-                                </span>
-                            </a>
-                        </motion.div>
-                        <div className="hidden lg:flex items-center space-x-1">
-                            {menuItems.map((item: any) => (
-                                <motion.div key={item.id} className="relative" onMouseEnter={() => setHoveredItem(item.id)} onMouseLeave={() => setHoveredItem(null)} whileTap={{ scale: 0.95 }}>
-                                    <a href={`#${item.url}`} onClick={(e) => scrollToSection(e, item.url)} className={cn("flex items-center px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300", "text-[#1A1F2C] hover:text-amber-600")}>
-                                        {item.title}
-                                    </a>
-                                    {hoveredItem === item.id && (
-                                        <motion.div layoutId="navbar-hover" className="absolute inset-0 bg-amber-50/90 rounded-full -z-10" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
-                                    )}
-                                </motion.div>
-                            ))}
-                            <a href="#contact" onClick={(e) => scrollToSection(e, 'contact')} className="ml-4 bg-amber-500 text-white px-6 py-2.5 rounded-full shadow-lg shadow-amber-200/40 hover:bg-amber-600 hover:scale-105 active:scale-95 transition-all font-black uppercase tracking-widest text-[9px]">
-                                Contact us for assessment
-                            </a>
-                        </div>
-                        <div className="lg:hidden">
-                            <motion.button onClick={toggleMenu} className="w-11 h-11 flex items-center justify-center rounded-full transition-all duration-300 shadow-md border border-slate-100 bg-white text-[#1A1F2C]" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                <Menu className="w-5 h-5" />
-                            </motion.button>
+            <header role="banner" className="relative">
+                <nav aria-label="Primary Navigation" className={cn("fixed top-0 left-0 right-0 z-[200] transition-all duration-500 ease-in-out", isScrolled ? "py-3 bg-white/80 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.06)] border-b border-slate-200/50" : "py-5 md:py-6 bg-transparent border-transparent shadow-none", className)}>
+                    <div className="max-w-7xl mx-auto px-6 lg:px-12">
+                        <div className="flex items-center justify-between h-12 md:h-14">
+                            <motion.div className="flex-shrink-0 origin-left" animate={{ scale: isScrolled ? 1.05 : 1 }} transition={{ type: "spring", stiffness: 300, damping: 25 }}>
+                                <a href="#top" onClick={(e) => scrollToSection(e, 'top')} aria-label="Gradway Home" className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-full p-1">
+                                    <div className="w-10 h-10 md:w-11 md:h-11 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden p-1.5 border border-slate-100 group-hover:shadow-xl transition-all">
+                                        {logoUrl ? <img src={logoUrl} alt="Gradway Education Consultancy Logo" width="44" height="44" className="w-full h-full object-contain" /> : null}
+                                    </div>
+                                    <span className="text-sm md:text-base font-black uppercase tracking-tight text-[#1A1F2C] leading-none">
+                                        Gradway (Pvt) Ltd
+                                    </span>
+                                </a>
+                            </motion.div>
+                            <div className="hidden lg:flex items-center space-x-1" role="menubar">
+                                {menuItems.map((item: any) => (
+                                    <motion.div key={item.id} className="relative" onMouseEnter={() => setHoveredItem(item.id)} onMouseLeave={() => setHoveredItem(null)} whileTap={{ scale: 0.95 }}>
+                                        <a href={`#${item.url}`} role="menuitem" onClick={(e) => scrollToSection(e, item.url)} className={cn("flex items-center px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500", "text-[#1A1F2C] hover:text-amber-600")}>
+                                            {item.title}
+                                        </a>
+                                        {hoveredItem === item.id && (
+                                            <motion.div layoutId="navbar-hover" className="absolute inset-0 bg-amber-50/90 rounded-full -z-10" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+                                        )}
+                                    </motion.div>
+                                ))}
+                                <a href="#contact" onClick={(e) => scrollToSection(e, 'contact')} className="ml-4 bg-amber-500 text-white px-6 py-2.5 rounded-full shadow-lg shadow-amber-200/40 hover:bg-amber-600 hover:scale-105 active:scale-95 transition-all font-black uppercase tracking-widest text-[9px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2">
+                                    Contact us for assessment
+                                </a>
+                            </div>
+                            <div className="lg:hidden">
+                                <motion.button onClick={toggleMenu} aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"} aria-expanded={isMenuOpen} className="w-11 h-11 flex items-center justify-center rounded-full transition-all duration-300 shadow-md border border-slate-100 bg-white text-[#1A1F2C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                                    <Menu className="w-5 h-5" aria-hidden="true" />
+                                </motion.button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </nav>
+                </nav>
+            </header>
             <AnimatePresence>
                 {isMenuOpen && (
-                    <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 sm:p-8">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-[#0a0d14]/60 backdrop-blur-lg cursor-pointer" onClick={toggleMenu} />
+                    <div className="fixed inset-0 z-[300] flex items-center justify-center p-6 sm:p-8" role="dialog" aria-modal="true" aria-label="Mobile Navigation Menu">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-[#0a0d14]/60 backdrop-blur-lg cursor-pointer" onClick={toggleMenu} aria-hidden="true" />
                         <motion.div variants={menuVariants} initial="closed" animate="open" exit="closed" className="relative w-full max-w-[310px] bg-white border border-slate-100 rounded-[3rem] shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)] z-[310] flex flex-col overflow-hidden max-h-[95vh]">
                             <div className="p-6 flex flex-col items-center">
-                                <motion.button onClick={toggleMenu} className="absolute top-5 right-5 p-2 text-slate-300 hover:text-red-500 rounded-full hover:bg-slate-50 transition-colors z-[320]" whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }}>
-                                    <X className="w-5 h-5" />
+                                <motion.button onClick={toggleMenu} aria-label="Close menu" className="absolute top-5 right-5 p-2 text-slate-400 hover:text-red-500 rounded-full hover:bg-slate-50 transition-colors z-[320] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500" whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }}>
+                                    <X className="w-5 h-5" aria-hidden="true" />
                                 </motion.button>
                                 <div className="flex flex-col items-center gap-3 mb-6 mt-4">
                                     <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg p-2 border border-slate-50">
-                                        {logoUrl ? <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" /> : null}
+                                        {logoUrl ? <img src={logoUrl} alt="Gradway Logo" width="64" height="64" className="w-full h-full object-contain" /> : null}
                                     </div>
                                     <span className="text-sm font-black uppercase tracking-tight text-[#1A1F2C]">
                                         Gradway (Pvt) Ltd
                                     </span>
                                 </div>
-                                <div className="w-full space-y-1.5">
+                                <div className="w-full space-y-1.5" role="menu">
                                     {menuItems.map((item: any) => (
                                         <motion.div key={item.id} variants={itemVariants} whileHover={{ scale: 1.02, x: 4 }} whileTap={{ scale: 0.98 }}>
-                                            <a href={`#${item.url}`} onClick={(e) => scrollToSection(e, item.url)} className="flex items-center space-x-4 px-5 py-3 rounded-[1.5rem] bg-slate-50/80 hover:bg-amber-50 border border-transparent hover:border-amber-100 transition-all group">
+                                            <a href={`#${item.url}`} role="menuitem" onClick={(e) => scrollToSection(e, item.url)} className="flex items-center space-x-4 px-5 py-3 rounded-[1.5rem] bg-slate-50/80 hover:bg-amber-50 border border-transparent hover:border-amber-100 transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500">
                                                 <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center text-amber-500 shadow-sm group-hover:bg-amber-500 group-hover:text-white transition-all duration-300">
                                                     {item.icon}
                                                 </div>
@@ -169,9 +180,9 @@ export const ScrollNavigation = ({ menuItems = defaultMenuItems, className = "",
                                         </motion.div>
                                     ))}
                                     <motion.div variants={itemVariants} whileHover={{ scale: 1.02, x: 4 }} whileTap={{ scale: 0.98 }}>
-                                        <a href="#contact" onClick={(e) => scrollToSection(e, 'contact')} className="flex items-center space-x-4 px-5 py-3 rounded-[1.5rem] bg-amber-500 hover:bg-amber-600 border border-transparent transition-all group">
+                                        <a href="#contact" onClick={(e) => scrollToSection(e, 'contact')} className="flex items-center space-x-4 px-5 py-3 rounded-[1.5rem] bg-amber-500 hover:bg-amber-600 border border-transparent transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500">
                                             <div className="w-9 h-9 bg-white rounded-xl flex items-center justify-center text-amber-500 shadow-sm">
-                                                <Mail className="w-4 h-4" />
+                                                <Mail className="w-4 h-4" aria-hidden="true" />
                                             </div>
                                             <span className="text-[9px] font-black uppercase tracking-[0.1em] text-white">
                                                 Contact us for assessment
@@ -182,14 +193,14 @@ export const ScrollNavigation = ({ menuItems = defaultMenuItems, className = "",
                             </div>
                             <div className="mt-6 pt-6 border-t border-slate-100 w-full flex flex-col items-center">
                                 <div className="flex flex-row items-center justify-center gap-5 mb-6 flex-nowrap overflow-visible">
-                                    <motion.a href={WA_LINK} target="_blank" rel="noopener noreferrer" className="text-[#25D366]" whileHover={{ scale: 1.3, y: -5 }} whileTap={{ scale: 0.9 }}>
-                                        <i className="fa-brands fa-whatsapp text-2xl" />
+                                    <motion.a href={WA_LINK} target="_blank" rel="noopener noreferrer" aria-label="Contact Gradway on WhatsApp" className="text-[#25D366] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-full p-1" whileHover={{ scale: 1.3, y: -5 }} whileTap={{ scale: 0.9 }}>
+                                        <i className="fa-brands fa-whatsapp text-2xl" aria-hidden="true" />
                                     </motion.a>
-                                    <motion.a href="https://web.facebook.com/p/GradWay-Education-Consultancy-61577557164852" target="_blank" rel="noopener noreferrer" className="text-[#1877F2]" whileHover={{ scale: 1.3, y: -5 }} whileTap={{ scale: 0.9 }}>
-                                        <i className="fa-brands fa-facebook text-2xl" />
+                                    <motion.a href="https://web.facebook.com/p/GradWay-Education-Consultancy-61577557164852" target="_blank" rel="noopener noreferrer" aria-label="Visit Gradway on Facebook" className="text-[#1877F2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-full p-1" whileHover={{ scale: 1.3, y: -5 }} whileTap={{ scale: 0.9 }}>
+                                        <i className="fa-brands fa-facebook text-2xl" aria-hidden="true" />
                                     </motion.a>
-                                    <motion.a href="https://www.instagram.com/gradway_education" target="_blank" rel="noopener noreferrer" className="text-[#E4405F]" whileHover={{ scale: 1.3, y: -5 }} whileTap={{ scale: 0.9 }}>
-                                        <i className="fa-brands fa-instagram text-2xl" />
+                                    <motion.a href="https://www.instagram.com/gradway_education" target="_blank" rel="noopener noreferrer" aria-label="Visit Gradway on Instagram" className="text-[#E4405F] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-full p-1" whileHover={{ scale: 1.3, y: -5 }} whileTap={{ scale: 0.9 }}>
+                                        <i className="fa-brands fa-instagram text-2xl" aria-hidden="true" />
                                     </motion.a>
                                 </div>
                                 <div className="flex flex-col items-center leading-tight">

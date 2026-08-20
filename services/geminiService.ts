@@ -1,31 +1,30 @@
-import { GoogleGenAI } from "@google/genai";
+/**
+ * Gradway AI Consultation Service
+ * Proxies AI queries to the secure backend endpoint with rate limiting and prompt injection protections.
+ */
 
-const SYSTEM_INSTRUCTION = `
-You are an expert Education Consultant for Gradway (Pvt) Ltd.
-Gradway is a Sri Lanka-based study abroad partner located in Colombo 5.
-Key Services: Profile Review, University Mapping, Visa Application, etc.
-Tone: Professional, helpful, friendly, and structured.
-Your goal is to answer questions from prospective students about studying abroad in UK, Germany, Canada, Australia, etc.
-Always encourage them to visit the office in Colombo or contact Gradway at +94 77 500 9929.
-`;
-
-export const getGeminiResponse = async (prompt: string) => {
-    // Always create a new instance right before the call to ensure latest API key usage.
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+export const getGeminiResponse = async (prompt: string): Promise<string> => {
     try {
-        const response = await ai.models.generateContent({
-            model: "gemini-3-flash-preview",
-            contents: prompt,
-            config: {
-                systemInstruction: SYSTEM_INSTRUCTION,
-                temperature: 0.7,
+        const response = await fetch('/api/ai/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
             },
+            body: JSON.stringify({ message: prompt }),
         });
-        // response.text is a property, not a method.
-        return response.text;
-    }
-    catch (error) {
-        console.error("Gemini API Error:", error);
-        return "I'm having a bit of trouble connecting right now. Please reach out to our team directly at +94 77 500 9929";
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            if (response.status === 429) {
+                return "You're sending messages quite fast. Please wait a moment before sending your next question, or call our Colombo hotline directly at +94 77 500 9929.";
+            }
+            throw new Error(errorData.error || `Server responded with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.reply || "Thank you for asking! Please connect with our counselors at +94 77 500 9929 to explore your study options in detail.";
+    } catch (error) {
+        console.error("AI Consultation Service Error:", error);
+        return "I'm having trouble reaching our AI consultant right now. Please reach out to our team directly via WhatsApp or Phone at +94 77 500 9929.";
     }
 };

@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { DESTINATIONS, SERVICES, SUCCESS_STORIES, MAIN_FAQ, FULL_FAQ, UK_UNIVERSITIES } from '@/constants';
-import { getGeminiResponse } from '@/services/geminiService';
 import { ScrollNavigation } from '@/components/ui/scroll-navigation-menu';
 import { OfferCarousel } from '@/components/ui/offer-carousel';
 import { StudentSuccessCarousel } from '@/components/ui/student-success-carousel';
@@ -127,6 +126,8 @@ const SectionBadge = ({ text, lightVariant, amberOutline }: any) => (
 const CustomDropdown = ({ label, value, options, onChange, placeholder, className }: any) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const dropdownId = React.useId();
+
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             if (containerRef.current && !containerRef.current.contains(e.target as Node))
@@ -135,18 +136,41 @@ const CustomDropdown = ({ label, value, options, onChange, placeholder, classNam
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
     return (
         <div className={cn("space-y-1 relative", className)} ref={containerRef}>
-            <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-4">{label}</label>
-            <button type="button" onClick={() => setIsOpen(!isOpen)} className="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl outline-none text-left text-sm font-medium flex items-center justify-between hover:bg-slate-100 transition-all focus:border-amber-500 focus:bg-white">
-                <span className={!value ? "text-slate-400" : "text-slate-800"}>{value || placeholder || "Select option"}</span>
-                <ChevronDown size={14} className={cn("transition-transform duration-300", isOpen && "rotate-180")} />
+            <label id={`${dropdownId}-label`} className="text-[9px] font-black uppercase tracking-widest text-slate-600 ml-4">{label}</label>
+            <button 
+                type="button" 
+                id={`${dropdownId}-btn`}
+                aria-haspopup="listbox" 
+                aria-expanded={isOpen} 
+                aria-labelledby={`${dropdownId}-label ${dropdownId}-btn`}
+                onClick={() => setIsOpen(!isOpen)} 
+                className="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl outline-none text-left text-sm font-medium flex items-center justify-between hover:bg-slate-100 transition-all focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:border-amber-500 focus-visible:bg-white"
+            >
+                <span className={!value ? "text-slate-500" : "text-slate-800 font-semibold"}>{value || placeholder || "Select option"}</span>
+                <ChevronDown size={14} className={cn("transition-transform duration-300", isOpen && "rotate-180")} aria-hidden="true" />
             </button>
             <AnimatePresence>
                 {isOpen && (
-                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute z-[100] left-0 right-0 top-[110%] bg-white border border-slate-100 rounded-3xl shadow-2xl p-2 max-h-[200px] overflow-y-auto custom-scrollbar">
+                    <motion.div 
+                        role="listbox" 
+                        aria-labelledby={`${dropdownId}-label`}
+                        initial={{ opacity: 0, y: 10 }} 
+                        animate={{ opacity: 1, y: 0 }} 
+                        exit={{ opacity: 0, y: 10 }} 
+                        className="absolute z-[100] left-0 right-0 top-[110%] bg-white border border-slate-100 rounded-3xl shadow-2xl p-2 max-h-[200px] overflow-y-auto custom-scrollbar"
+                    >
                         {options.map((opt: string) => (
-                            <button key={opt} type="button" onClick={() => { onChange(opt); setIsOpen(false); }} className={cn("flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all text-left group hover:bg-amber-50", value === opt ? "bg-amber-50 text-amber-600" : "text-slate-600")}>
+                            <button 
+                                key={opt} 
+                                type="button" 
+                                role="option"
+                                aria-selected={value === opt}
+                                onClick={() => { onChange(opt); setIsOpen(false); }} 
+                                className={cn("flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all text-left group hover:bg-amber-50 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none", value === opt ? "bg-amber-50 text-amber-700 font-bold" : "text-slate-700")}
+                            >
                                 <span className="text-xs font-bold uppercase tracking-wider">{opt}</span>
                             </button>
                         ))}
@@ -160,26 +184,45 @@ const CustomDropdown = ({ label, value, options, onChange, placeholder, classNam
 const FAQAccordion = ({ items }: any) => {
     const [openId, setOpenId] = useState<number | null>(null);
     return (
-        <div className="space-y-4">
-            {items.map((faq: any) => (
-                <div key={faq.id} className="bg-white border border-slate-100 rounded-[2rem] overflow-hidden shadow-sm transition-all hover:shadow-md">
-                    <button onClick={() => setOpenId(openId === faq.id ? null : faq.id)} className="w-full px-8 py-6 flex items-center justify-between text-left group">
-                        <span className="font-black text-slate-800 text-sm md:text-base leading-tight pr-4 tracking-tight">{faq.question}</span>
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${openId === faq.id ? 'bg-amber-500 text-white rotate-45' : 'bg-slate-100 text-slate-400 group-hover:bg-amber-100 group-hover:text-amber-600'}`}>
-                            <i className="fa-solid fa-plus text-xs" />
-                        </div>
-                    </button>
-                    <AnimatePresence>
-                        {openId === faq.id && (
-                            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: 'easeInOut' }}>
-                                <div className="px-8 pb-8 text-slate-500 text-sm font-medium leading-relaxed border-t border-slate-50 pt-6">
-                                    {faq.answer}
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
-            ))}
+        <div className="space-y-4" role="region" aria-label="FAQ Accordion">
+            {items.map((faq: any) => {
+                const btnId = `faq-btn-${faq.id}`;
+                const panelId = `faq-panel-${faq.id}`;
+                const isExpanded = openId === faq.id;
+                return (
+                    <div key={faq.id} className="bg-white border border-slate-100 rounded-[2rem] overflow-hidden shadow-sm transition-all hover:shadow-md">
+                        <button 
+                            id={btnId}
+                            aria-expanded={isExpanded}
+                            aria-controls={panelId}
+                            onClick={() => setOpenId(isExpanded ? null : faq.id)} 
+                            className="w-full px-8 py-6 flex items-center justify-between text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+                        >
+                            <span className="font-black text-slate-800 text-sm md:text-base leading-tight pr-4 tracking-tight">{faq.question}</span>
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${isExpanded ? 'bg-amber-500 text-white rotate-45' : 'bg-slate-100 text-slate-600 group-hover:bg-amber-100 group-hover:text-amber-700'}`}>
+                                <i className="fa-solid fa-plus text-xs" aria-hidden="true" />
+                            </div>
+                        </button>
+                        <AnimatePresence>
+                            {isExpanded && (
+                                <motion.div 
+                                    id={panelId}
+                                    role="region"
+                                    aria-labelledby={btnId}
+                                    initial={{ height: 0, opacity: 0 }} 
+                                    animate={{ height: 'auto', opacity: 1 }} 
+                                    exit={{ height: 0, opacity: 0 }} 
+                                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                >
+                                    <div className="px-8 pb-8 text-slate-600 text-sm font-medium leading-relaxed border-t border-slate-50 pt-6">
+                                        {faq.answer}
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                );
+            })}
         </div>
     );
 };
@@ -873,61 +916,6 @@ const LegalModal = ({ type, onClose }: any) => {
                 <div className="flex-1 overflow-y-auto p-8 md:p-14 custom-scrollbar mb-4">
                     {content.body}
                     <div className="h-12 w-full shrink-0" />
-                </div>
-            </motion.div>
-        </motion.div>
-    );
-};
-
-const HistoryModal = ({ isOpen, onClose, onRestore }: any) => {
-    const [versions, setVersions] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        if (isOpen) {
-            setLoading(true);
-            fetch('/api/chat/history')
-                .then(res => res.json())
-                .then(data => {
-                    setVersions(data);
-                    setLoading(false);
-                })
-                .catch(err => {
-                    console.error("Failed to fetch history:", err);
-                    setLoading(false);
-                });
-        }
-    }, [isOpen]);
-
-    if (!isOpen) return null;
-
-    return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 z-[500] flex items-center justify-center p-6 bg-[#0a0d14]/80 backdrop-blur-xl cursor-pointer">
-            <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }} onClick={(e) => e.stopPropagation()} className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[80vh] cursor-default">
-                <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-white relative z-10 shrink-0">
-                    <h3 className="text-2xl font-black text-[#1A1F2C] uppercase tracking-tight">Chat History</h3>
-                    <button onClick={onClose} className="w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center transition-colors">
-                        <X size={20} className="text-slate-400" />
-                    </button>
-                </div>
-                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-4">
-                    {loading ? (
-                        <div className="flex justify-center p-8"><Loader2 className="animate-spin text-slate-400" /></div>
-                    ) : versions.length === 0 ? (
-                        <p className="text-center text-slate-400 text-sm">No saved versions found.</p>
-                    ) : (
-                        versions.map((v: any) => (
-                            <div key={v.id} className="p-4 border border-slate-100 rounded-2xl hover:bg-slate-50 transition-colors flex justify-between items-center group">
-                                <div>
-                                    <p className="text-sm font-bold text-slate-800">Version #{v.id}</p>
-                                    <p className="text-xs text-slate-500">{new Date(v.created_at).toLocaleString()}</p>
-                                </div>
-                                <button onClick={() => onRestore(v.id)} className="px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-amber-500 transition-colors opacity-0 group-hover:opacity-100">
-                                    Restore
-                                </button>
-                            </div>
-                        ))
-                    )}
                 </div>
             </motion.div>
         </motion.div>
@@ -2356,64 +2344,6 @@ const FranceDestinationPage = ({ onContact }: any) => {
     );
 };
 
-const ChatWidget = ({ chatOpen, setChatOpen, chatMessage, setChatMessage, chatHistory, isTyping, handleChatSubmit, onSave, onHistory }: any) => {
-    const messagesEndRef = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [chatHistory, isTyping]);
-
-    if (!chatOpen) return null;
-
-    return (
-        <div className="fixed bottom-24 right-6 w-80 md:w-96 bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden z-[200] flex flex-col max-h-[500px]">
-            <div className="bg-[#1A1F2C] p-4 flex items-center justify-between text-white">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center text-[#1A1F2C]">
-                        <Headset size={16} />
-                    </div>
-                    <div>
-                        <h4 className="font-bold text-sm">Gradway Assistant</h4>
-                        <p className="text-[10px] text-slate-400 flex items-center gap-1"><span className="w-1.5 h-1.5 bg-green-500 rounded-full"/> Online</p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-2">
-                    <button onClick={onSave} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors" title="Save Chat"><i className="fa-solid fa-save text-xs" /></button>
-                    <button onClick={onHistory} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors" title="History"><i className="fa-solid fa-clock-rotate-left text-xs" /></button>
-                    <button onClick={() => setChatOpen(false)} className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"><X size={18} /></button>
-                </div>
-            </div>
-            <div className="flex-1 p-4 overflow-y-auto bg-slate-50 space-y-4 custom-scrollbar">
-                {chatHistory.length === 0 && (
-                    <div className="text-center text-slate-400 text-xs py-4">
-                        <p>👋 Hi! Ask me anything about studying in UK, Australia, Canada, etc.</p>
-                    </div>
-                )}
-                {chatHistory.map((msg: any, i: number) => (
-                    <div key={i} className={cn("flex", msg.role === 'user' ? "justify-end" : "justify-start")}>
-                        <div className={cn("max-w-[85%] p-3 rounded-2xl text-xs font-medium leading-relaxed", msg.role === 'user' ? "bg-[#1A1F2C] text-white rounded-tr-none" : "bg-white border border-slate-100 text-slate-700 rounded-tl-none shadow-sm")}>
-                            {msg.text}
-                        </div>
-                    </div>
-                ))}
-                {isTyping && (
-                     <div className="flex justify-start">
-                        <div className="bg-white border border-slate-100 p-3 rounded-2xl rounded-tl-none shadow-sm flex gap-1">
-                            <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" />
-                            <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-75" />
-                            <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-150" />
-                        </div>
-                    </div>
-                )}
-                <div ref={messagesEndRef} />
-            </div>
-            <form onSubmit={handleChatSubmit} className="p-3 bg-white border-t border-slate-100 flex gap-2">
-                <input value={chatMessage} onChange={e => setChatMessage(e.target.value)} placeholder="Type a message..." className="flex-1 bg-slate-50 border-transparent focus:bg-white focus:border-amber-500 rounded-xl px-4 py-2 text-xs outline-none border transition-all" />
-                <button type="submit" disabled={!chatMessage.trim() || isTyping} className="bg-amber-500 text-white w-9 h-9 rounded-xl flex items-center justify-center hover:bg-amber-600 transition-colors disabled:opacity-50"><ArrowUp size={16} /></button>
-            </form>
-        </div>
-    )
-};
-
 const PopUpInquiryForm = ({ isOpen, onClose, countryPrefix }: any) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -2598,10 +2528,6 @@ const PopUpInquiryForm = ({ isOpen, onClose, countryPrefix }: any) => {
 const App = () => {
     const [view, setView] = useState('main');
     const [modal, setModal] = useState('none');
-    const [chatOpen, setChatOpen] = useState(false);
-    const [chatMessage, setChatMessage] = useState('');
-    const [chatHistory, setChatHistory] = useState<any[]>([]);
-    const [isTyping, setIsTyping] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [ukFormOpen, setUkFormOpen] = useState(false);
@@ -2622,7 +2548,6 @@ const App = () => {
     const [selectedFieldOfStudy, setSelectedFieldOfStudy] = useState("");
     const [selectedProgramLevel, setSelectedProgramLevel] = useState("");
     const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
-    const [historyModalOpen, setHistoryModalOpen] = useState(false);
     const countryDropdownRef = useRef<HTMLDivElement>(null);
     const hiddenFormRef = useRef<HTMLFormElement>(null);
 
@@ -2687,6 +2612,66 @@ const App = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        
+        let title = "Gradway | Study Abroad & Migration Simplified - Colombo, Sri Lanka";
+        let desc = "Gradway (Pvt) Ltd is Sri Lanka's leading study abroad consultancy. Get expert guidance for university admissions, student visas, scholarships, and post-study work in the UK, Germany, Canada, Australia, France, and the USA.";
+        let canonical = "https://gradwayedu.com/";
+
+        if (view === 'destination-uk') {
+            title = "Study in the UK - Universities, Visas & Scholarships | Gradway";
+            desc = "Explore top UK universities, 2-year post-study work visas (Graduate Route), admission criteria, and scholarship guidance from Gradway Colombo.";
+            canonical = "https://gradwayedu.com/#uk";
+        } else if (view === 'destination-germany') {
+            title = "Study in Germany - Free Tuition & English Programs | Gradway";
+            desc = "Discover tuition-free public universities in Germany, English-taught STEM courses, APS guidance, and 18-month post-study work rights with Gradway.";
+            canonical = "https://gradwayedu.com/#germany";
+        } else if (view === 'destination-france') {
+            title = "Study in France - Affordable European Degrees | Gradway";
+            desc = "Apply for English-taught bachelor's and master's degrees in France with Schengen access, work rights, and visa support from Gradway.";
+            canonical = "https://gradwayedu.com/#france";
+        } else if (view === 'faq-full') {
+            title = "Frequently Asked Questions (FAQ) - Study Abroad & Visas | Gradway";
+            desc = "Get clear, authoritative answers to top questions on studying abroad, visa processing times, university requirements, and costs.";
+            canonical = "https://gradwayedu.com/#faq-full";
+        } else if (view === 'services-full') {
+            title = "Our Services - Admissions, Visas, Scholarships & Briefings | Gradway";
+            desc = "End-to-end international education services: university mapping, SOP review, financial filing, scholarship discovery, and mock visa interviews.";
+            canonical = "https://gradwayedu.com/#services-full";
+        } else if (view === 'partner') {
+            title = "Partner With Us - Institutional Collaborations | Gradway";
+            desc = "Partner with Gradway (Pvt) Ltd to recruit high-achieving Sri Lankan and South Asian students for global universities and colleges.";
+            canonical = "https://gradwayedu.com/#partner";
+        } else if (view === 'careers') {
+            title = "Careers at Gradway - Join Our Colombo Education Team";
+            desc = "Explore exciting career and counselor opportunities at Gradway Colombo. Help students achieve global academic dreams.";
+            canonical = "https://gradwayedu.com/#careers";
+        } else if (view.startsWith('destination-')) {
+            const countryId = view.replace('destination-', '');
+            const countryData = otherDestinationsData[countryId];
+            if (countryData) {
+                title = `Study in ${countryData.name} - University Admissions & Visas | Gradway`;
+                desc = `Comprehensive guide to studying in ${countryData.name}. Get personalized university application and visa processing support from Gradway Colombo.`;
+                canonical = `https://gradwayedu.com/#destination-${countryId}`;
+            }
+        }
+
+        document.title = title;
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) {
+            metaDesc.setAttribute("content", desc);
+        }
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        if (ogTitle) {
+            ogTitle.setAttribute("content", title);
+        }
+        const ogDesc = document.querySelector('meta[property="og:description"]');
+        if (ogDesc) {
+            ogDesc.setAttribute("content", desc);
+        }
+        const canonicalTag = document.querySelector('link[rel="canonical"]');
+        if (canonicalTag) {
+            canonicalTag.setAttribute("href", canonical);
+        }
     }, [view]);
 
     useEffect(() => {
@@ -2707,55 +2692,6 @@ const App = () => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
-
-    const handleChatSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!chatMessage.trim())
-            return;
-        const userMsg = chatMessage;
-        setChatHistory(prev => [...prev, { role: 'user', text: userMsg }]);
-        setChatMessage('');
-        setIsTyping(true);
-        const botResponse = await getGeminiResponse(userMsg);
-        setChatHistory(prev => [...prev, { role: 'bot', text: botResponse || '' }]);
-        setIsTyping(false);
-    };
-
-    const handleSaveChat = async () => {
-        if (chatHistory.length === 0) return;
-        try {
-            const res = await fetch('/api/chat/save', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: chatHistory })
-            });
-            if (res.ok) {
-                alert('Chat saved successfully!');
-            } else {
-                alert('Failed to save chat.');
-            }
-        } catch (e) {
-            console.error(e);
-            alert('Error saving chat.');
-        }
-    };
-
-    const handleRestoreChat = async (id: number) => {
-        try {
-            const res = await fetch(`/api/chat/version/${id}`);
-            if (res.ok) {
-                const data = await res.json();
-                setChatHistory(data.content);
-                setHistoryModalOpen(false);
-                setChatOpen(true);
-            } else {
-                alert('Failed to restore chat.');
-            }
-        } catch (e) {
-            console.error(e);
-            alert('Error restoring chat.');
-        }
-    };
 
     const handleContactSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -2917,9 +2853,7 @@ const App = () => {
                     </div>
                 </main>
                 <Footer onModal={setModal} onNavigate={scrollToId} onSetView={setView} />
-                <ChatWidget chatOpen={chatOpen} setChatOpen={setChatOpen} chatMessage={chatMessage} setChatMessage={setChatMessage} chatHistory={chatHistory} isTyping={isTyping} handleChatSubmit={handleChatSubmit} onSave={handleSaveChat} onHistory={() => setHistoryModalOpen(true)} />
                 <AnimatePresence>{modal !== 'none' && <LegalModal type={modal} onClose={() => setModal('none')} />}</AnimatePresence>
-                <AnimatePresence>{historyModalOpen && <HistoryModal isOpen={historyModalOpen} onClose={() => setHistoryModalOpen(false)} onRestore={handleRestoreChat} />}</AnimatePresence>
             </div>
         );
     }
@@ -2942,9 +2876,7 @@ const App = () => {
                     </div>
                 </main>
                 <Footer onModal={setModal} onNavigate={scrollToId} onSetView={setView} />
-                <ChatWidget chatOpen={chatOpen} setChatOpen={setChatOpen} chatMessage={chatMessage} setChatMessage={setChatMessage} chatHistory={chatHistory} isTyping={isTyping} handleChatSubmit={handleChatSubmit} onSave={handleSaveChat} onHistory={() => setHistoryModalOpen(true)} />
                 <AnimatePresence>{modal !== 'none' && <LegalModal type={modal} onClose={() => setModal('none')} />}</AnimatePresence>
-                <AnimatePresence>{historyModalOpen && <HistoryModal isOpen={historyModalOpen} onClose={() => setHistoryModalOpen(false)} onRestore={handleRestoreChat} />}</AnimatePresence>
             </div>
         );
     }
@@ -2982,9 +2914,7 @@ const App = () => {
                     </div>
                 </main>
                 <Footer onModal={setModal} onNavigate={scrollToId} onSetView={setView} />
-                <ChatWidget chatOpen={chatOpen} setChatOpen={setChatOpen} chatMessage={chatMessage} setChatMessage={setChatMessage} chatHistory={chatHistory} isTyping={isTyping} handleChatSubmit={handleChatSubmit} onSave={handleSaveChat} onHistory={() => setHistoryModalOpen(true)} />
                 <AnimatePresence>{modal !== 'none' && <LegalModal type={modal} onClose={() => setModal('none')} />}</AnimatePresence>
-                <AnimatePresence>{historyModalOpen && <HistoryModal isOpen={historyModalOpen} onClose={() => setHistoryModalOpen(false)} onRestore={handleRestoreChat} />}</AnimatePresence>
             </div>
         );
     }
@@ -2995,9 +2925,7 @@ const App = () => {
                 <PopUpInquiryForm isOpen={ukFormOpen} onClose={() => setUkFormOpen(false)} countryPrefix="UK" />
                 <UKDestinationPage onContact={() => setUkFormOpen(true)} />
                 <Footer onModal={setModal} onNavigate={scrollToId} onSetView={setView} />
-                <ChatWidget chatOpen={chatOpen} setChatOpen={setChatOpen} chatMessage={chatMessage} setChatMessage={setChatMessage} chatHistory={chatHistory} isTyping={isTyping} handleChatSubmit={handleChatSubmit} onSave={handleSaveChat} onHistory={() => setHistoryModalOpen(true)} />
                 <AnimatePresence>{modal !== 'none' && <LegalModal type={modal} onClose={() => setModal('none')} />}</AnimatePresence>
-                <AnimatePresence>{historyModalOpen && <HistoryModal isOpen={historyModalOpen} onClose={() => setHistoryModalOpen(false)} onRestore={handleRestoreChat} />}</AnimatePresence>
             </div>
         );
     }
@@ -3008,9 +2936,7 @@ const App = () => {
                 <PopUpInquiryForm isOpen={germanyFormOpen} onClose={() => setGermanyFormOpen(false)} countryPrefix="Germany" />
                 <GermanyDestinationPage onContact={() => setGermanyFormOpen(true)} />
                 <Footer onModal={setModal} onNavigate={scrollToId} onSetView={setView} />
-                <ChatWidget chatOpen={chatOpen} setChatOpen={setChatOpen} chatMessage={chatMessage} setChatMessage={setChatMessage} chatHistory={chatHistory} isTyping={isTyping} handleChatSubmit={handleChatSubmit} onSave={handleSaveChat} onHistory={() => setHistoryModalOpen(true)} />
                 <AnimatePresence>{modal !== 'none' && <LegalModal type={modal} onClose={() => setModal('none')} />}</AnimatePresence>
-                <AnimatePresence>{historyModalOpen && <HistoryModal isOpen={historyModalOpen} onClose={() => setHistoryModalOpen(false)} onRestore={handleRestoreChat} />}</AnimatePresence>
             </div>
         );
     }
@@ -3021,9 +2947,7 @@ const App = () => {
                 <PopUpInquiryForm isOpen={franceFormOpen} onClose={() => setFranceFormOpen(false)} countryPrefix="France" />
                 <FranceDestinationPage onContact={() => setFranceFormOpen(true)} />
                 <Footer onModal={setModal} onNavigate={scrollToId} onSetView={setView} />
-                <ChatWidget chatOpen={chatOpen} setChatOpen={setChatOpen} chatMessage={chatMessage} setChatMessage={setChatMessage} chatHistory={chatHistory} isTyping={isTyping} handleChatSubmit={handleChatSubmit} onSave={handleSaveChat} onHistory={() => setHistoryModalOpen(true)} />
                 <AnimatePresence>{modal !== 'none' && <LegalModal type={modal} onClose={() => setModal('none')} />}</AnimatePresence>
-                <AnimatePresence>{historyModalOpen && <HistoryModal isOpen={historyModalOpen} onClose={() => setHistoryModalOpen(false)} onRestore={handleRestoreChat} />}</AnimatePresence>
             </div>
         );
     }
@@ -3051,9 +2975,7 @@ const App = () => {
                     <PopUpInquiryForm isOpen={genericFormOpen} onClose={() => setGenericFormOpen(false)} countryPrefix={countryData.name} />
                     <GenericDestinationPage data={dataWithBento} onContact={() => setGenericFormOpen(true)} />
                     <Footer onModal={setModal} onNavigate={scrollToId} onSetView={setView} />
-                    <ChatWidget chatOpen={chatOpen} setChatOpen={setChatOpen} chatMessage={chatMessage} setChatMessage={setChatMessage} chatHistory={chatHistory} isTyping={isTyping} handleChatSubmit={handleChatSubmit} onSave={handleSaveChat} onHistory={() => setHistoryModalOpen(true)} />
                     <AnimatePresence>{modal !== 'none' && <LegalModal type={modal} onClose={() => setModal('none')} />}</AnimatePresence>
-                    <AnimatePresence>{historyModalOpen && <HistoryModal isOpen={historyModalOpen} onClose={() => setHistoryModalOpen(false)} onRestore={handleRestoreChat} />}</AnimatePresence>
                 </div>
             );
         }
@@ -3064,9 +2986,7 @@ const App = () => {
                 <ScrollNavigation logoUrl={LOGO_URL} onNavigate={scrollToId} />
                 <PartnerPage onNavigate={scrollToId} />
                 <Footer onModal={setModal} onNavigate={scrollToId} onSetView={setView} />
-                <ChatWidget chatOpen={chatOpen} setChatOpen={setChatOpen} chatMessage={chatMessage} setChatMessage={setChatMessage} chatHistory={chatHistory} isTyping={isTyping} handleChatSubmit={handleChatSubmit} onSave={handleSaveChat} onHistory={() => setHistoryModalOpen(true)} />
                 <AnimatePresence>{modal !== 'none' && <LegalModal type={modal} onClose={() => setModal('none')} />}</AnimatePresence>
-                <AnimatePresence>{historyModalOpen && <HistoryModal isOpen={historyModalOpen} onClose={() => setHistoryModalOpen(false)} onRestore={handleRestoreChat} />}</AnimatePresence>
             </div>
         );
     }
@@ -3074,6 +2994,7 @@ const App = () => {
     return (
         <div className="min-h-screen bg-[#FAFAFA]" id="top">
             <ScrollNavigation logoUrl={LOGO_URL} onNavigate={scrollToId} />
+            <main id="main-content" tabIndex={-1} className="outline-none">
             <iframe name="google_form_target" id="google_form_target" style={{ position: 'absolute', left: '-9999px' }} />
             <section id="home" className="relative min-h-[100svh] flex flex-col items-center pt-32 lg:pt-0 lg:flex-row overflow-hidden">
                 <div className="absolute inset-0 hero-pattern opacity-10 pointer-events-none" />
@@ -3284,38 +3205,45 @@ const App = () => {
                     <h2 className="text-4xl md:text-7xl font-black text-[#1A1F2C] tracking-tight mb-12 leading-tight uppercase max-w-4xl">Start Your Journey.</h2>
                     <div className="w-full max-w-3xl bg-white p-10 md:p-14 rounded-[4rem] shadow-2xl text-left border border-slate-100 mb-16 relative overflow-visible">
                          {!formSubmitted ? (
-                             <form onSubmit={handleContactSubmit} className="space-y-8">
+                             <form onSubmit={handleContactSubmit} className="space-y-8" aria-label="Study Abroad Assessment Inquiry Form">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Full Name</label>
-                                        <input required placeholder="John Doe" value={name} onChange={e => setName(e.target.value)} className="w-full px-8 py-5 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-amber-500 focus:bg-white transition-all font-medium text-sm" />
+                                        <label htmlFor="inquiry-name" className="text-[10px] font-black uppercase tracking-widest text-slate-600 ml-4">Full Name *</label>
+                                        <input id="inquiry-name" required placeholder="John Doe" value={name} onChange={e => setName(e.target.value)} className="w-full px-8 py-5 bg-slate-50 border border-transparent rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus:border-amber-500 focus:bg-white transition-all font-medium text-sm text-slate-800" />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Phone Number</label>
-                                        <input required placeholder="+94 xx xxx xxxx" value={phone} onChange={e => setPhone(e.target.value)} className="w-full px-8 py-5 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-amber-500 focus:bg-white transition-all font-medium text-sm" />
+                                        <label htmlFor="inquiry-phone" className="text-[10px] font-black uppercase tracking-widest text-slate-600 ml-4">Phone Number *</label>
+                                        <input id="inquiry-phone" required type="tel" placeholder="+94 xx xxx xxxx" value={phone} onChange={e => setPhone(e.target.value)} className="w-full px-8 py-5 bg-slate-50 border border-transparent rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus:border-amber-500 focus:bg-white transition-all font-medium text-sm text-slate-800" />
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Email Address</label>
-                                        <input required type="email" placeholder="info@gradwayedu.com" value={email} onChange={e => setEmail(e.target.value)} className="w-full px-8 py-5 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-amber-500 focus:bg-white transition-all font-medium text-sm" />
+                                        <label htmlFor="inquiry-email" className="text-[10px] font-black uppercase tracking-widest text-slate-600 ml-4">Email Address *</label>
+                                        <input id="inquiry-email" required type="email" placeholder="info@gradwayedu.com" value={email} onChange={e => setEmail(e.target.value)} className="w-full px-8 py-5 bg-slate-50 border border-transparent rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus:border-amber-500 focus:bg-white transition-all font-medium text-sm text-slate-800" />
                                     </div>
                                     <CustomDropdown label="Program Level" value={selectedProgramLevel} options={PROGRAM_LEVELS} onChange={setSelectedProgramLevel} placeholder="Select program level" />
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="space-y-1 relative" ref={countryDropdownRef}>
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Preferred Countries (Select up to 4)</label>
-                                        <button type="button" onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)} className="w-full px-8 py-5 bg-slate-50 border border-transparent rounded-2xl outline-none text-left text-sm font-medium flex items-center justify-between hover:bg-slate-100 transition-all focus:border-amber-500 focus:bg-white">
-                                            <span className={selectedCountries.length === 0 ? "text-slate-400" : "text-slate-800 line-clamp-1"}>{selectedCountries.length > 0 ? selectedCountries.join(", ") : "Select destinations"}</span>
-                                            <ChevronDown size={16} className={cn("transition-transform duration-300", isCountryDropdownOpen && "rotate-180")} />
+                                        <label id="pref-countries-label" className="text-[10px] font-black uppercase tracking-widest text-slate-600 ml-4">Preferred Countries (Select up to 4)</label>
+                                        <button 
+                                            type="button" 
+                                            aria-labelledby="pref-countries-label"
+                                            aria-haspopup="listbox"
+                                            aria-expanded={isCountryDropdownOpen}
+                                            onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)} 
+                                            className="w-full px-8 py-5 bg-slate-50 border border-transparent rounded-2xl outline-none text-left text-sm font-medium flex items-center justify-between hover:bg-slate-100 transition-all focus-visible:ring-2 focus-visible:ring-amber-500 focus:border-amber-500 focus:bg-white"
+                                        >
+                                            <span className={selectedCountries.length === 0 ? "text-slate-500" : "text-slate-800 font-semibold line-clamp-1"}>{selectedCountries.length > 0 ? selectedCountries.join(", ") : "Select destinations"}</span>
+                                            <ChevronDown size={16} className={cn("transition-transform duration-300", isCountryDropdownOpen && "rotate-180")} aria-hidden="true" />
                                         </button>
                                         <AnimatePresence>
                                             {isCountryDropdownOpen && (
-                                                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute z-[100] left-0 right-0 top-[110%] bg-white border border-slate-100 rounded-3xl shadow-2xl p-4 max-h-[250px] overflow-y-auto custom-scrollbar">
+                                                <motion.div role="listbox" aria-labelledby="pref-countries-label" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute z-[100] left-0 right-0 top-[110%] bg-white border border-slate-100 rounded-3xl shadow-2xl p-4 max-h-[250px] overflow-y-auto custom-scrollbar">
                                                     <div className="grid grid-cols-1 gap-1">
                                                         {DESTINATIONS.map(d => (
-                                                            <button key={d.id} type="button" onClick={() => toggleCountrySelection(d.name)} className={cn("flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all text-left group", selectedCountries.includes(d.name) ? "bg-amber-50 text-amber-600" : "hover:bg-slate-50 text-slate-600")}>
-                                                                <div className={cn("w-4 h-4 rounded border flex items-center justify-center transition-all", selectedCountries.includes(d.name) ? "bg-amber-500 border-amber-500 text-white" : "border-slate-200 group-hover:border-amber-500")}>
+                                                            <button key={d.id} type="button" role="option" aria-selected={selectedCountries.includes(d.name)} onClick={() => toggleCountrySelection(d.name)} className={cn("flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all text-left group focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none", selectedCountries.includes(d.name) ? "bg-amber-50 text-amber-700 font-bold" : "hover:bg-slate-50 text-slate-700")}>
+                                                                <div className={cn("w-4 h-4 rounded border flex items-center justify-center transition-all", selectedCountries.includes(d.name) ? "bg-amber-500 border-amber-500 text-white" : "border-slate-300 group-hover:border-amber-500")}>
                                                                     {selectedCountries.includes(d.name) && <Check size={10} strokeWidth={3} />}
                                                                 </div>
                                                                 <span className="text-[10px] font-bold uppercase tracking-wider">{d.name}</span>
@@ -3329,15 +3257,15 @@ const App = () => {
                                     <CustomDropdown label="Field of study" value={selectedFieldOfStudy} options={FIELDS_OF_STUDY} onChange={setSelectedFieldOfStudy} placeholder="Select field of study" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Preferred Intake (Month / Year)</label>
-                                    <input required placeholder="Eg - September 20xx" value={intake} onChange={e => setIntake(e.target.value)} className="w-full px-8 py-5 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-amber-500 focus:bg-white transition-all font-medium text-sm" />
+                                    <label htmlFor="inquiry-intake" className="text-[10px] font-black uppercase tracking-widest text-slate-600 ml-4">Preferred Intake (Month / Year) *</label>
+                                    <input id="inquiry-intake" required placeholder="Eg - September 2026" value={intake} onChange={e => setIntake(e.target.value)} className="w-full px-8 py-5 bg-slate-50 border border-transparent rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus:border-amber-500 focus:bg-white transition-all font-medium text-sm text-slate-800" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Message</label>
-                                    <textarea required rows={4} placeholder="Tell us about your Goals, Budget or if you have any questions" value={message} onChange={e => setMessage(e.target.value)} className="w-full px-8 py-5 bg-slate-50 border border-transparent rounded-2xl outline-none focus:border-amber-500 focus:bg-white transition-all font-medium text-sm resize-none" />
+                                    <label htmlFor="inquiry-message" className="text-[10px] font-black uppercase tracking-widest text-slate-600 ml-4">Message *</label>
+                                    <textarea id="inquiry-message" required rows={4} placeholder="Tell us about your Goals, Budget or if you have any questions" value={message} onChange={e => setMessage(e.target.value)} className="w-full px-8 py-5 bg-slate-50 border border-transparent rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus:border-amber-500 focus:bg-white transition-all font-medium text-sm resize-none text-slate-800" />
                                 </div>
                                 <div className="pt-4">
-                                    <button type="submit" disabled={isSubmitting} className="btn-submit w-full bg-[#1A1F2C] text-white py-6 rounded-2xl font-black uppercase tracking-[0.2em] text-sm shadow-xl active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed">
+                                    <button type="submit" disabled={isSubmitting} className="btn-submit w-full bg-[#1A1F2C] text-white py-6 rounded-2xl font-black uppercase tracking-[0.2em] text-sm shadow-xl active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none">
                                         {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : "Submit Inquiry"}
                                     </button>
                                 </div>
@@ -3348,8 +3276,8 @@ const App = () => {
                                     <Check size={48} strokeWidth={4} />
                                 </div>
                                 <h3 className="text-3xl font-black uppercase tracking-tight text-slate-900 mb-4">Inquiry Received!</h3>
-                                <p className="text-slate-500 font-medium leading-relaxed mb-10">Thank you for reaching out. Your details have been recorded, and a Gradway consultant will call you shortly.</p>
-                                <button onClick={() => setFormSubmitted(false)} className="mt-8 text-amber-600 font-black uppercase text-[10px] tracking-widest hover:underline">Send another inquiry</button>
+                                <p className="text-slate-600 font-medium leading-relaxed mb-10">Thank you for reaching out. Your details have been recorded, and a Gradway consultant will call you shortly.</p>
+                                <button onClick={() => setFormSubmitted(false)} className="mt-8 text-amber-600 font-black uppercase text-[10px] tracking-widest hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500">Send another inquiry</button>
                             </motion.div>
                          )}
                          {/* Hidden Form for Submission Logic */}
@@ -3372,30 +3300,30 @@ const App = () => {
                         </form>
                     </div>
                     <div className="flex flex-col md:flex-row justify-center items-center gap-6 w-full max-w-5xl px-4 pb-4">
-                        <a href={`https://wa.me/${WA_PHONE}?text=${WA_PREFILLED_MSG}`} target="_blank" rel="noopener noreferrer" className="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg flex items-center gap-4 group hover:border-[#25D366] transition-all w-full md:w-auto md:flex-1 min-w-[220px]">
+                        <a href={`https://wa.me/${WA_PHONE}?text=${WA_PREFILLED_MSG}`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp with Gradway Colombo" className="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg flex items-center gap-4 group hover:border-[#25D366] transition-all w-full md:w-auto md:flex-1 min-w-[220px] focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:outline-none">
                             <div className="w-12 h-12 bg-[#25D366] text-white rounded-2xl flex items-center justify-center text-2xl shrink-0 shadow-md group-hover:scale-110 transition-transform">
-                                <MessageSquare size={24} />
+                                <MessageSquare size={24} aria-hidden="true" />
                             </div>
                             <div className="text-left">
-                                <span className="block text-[8px] font-black text-slate-400 uppercase tracking-widest">WhatsApp</span>
+                                <span className="block text-[8px] font-black text-slate-500 uppercase tracking-widest">WhatsApp</span>
                                 <span className="block text-xs font-black text-[#1A1F2C] tracking-tight">{PHONE_DISPLAY}</span>
                             </div>
                         </a>
-                        <a href={`tel:${WA_PHONE}`} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg flex items-center gap-4 group hover:border-amber-500 transition-all w-full md:w-auto md:flex-1 min-w-[220px]">
+                        <a href={`tel:${WA_PHONE}`} aria-label="Call Gradway office directly" className="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg flex items-center gap-4 group hover:border-amber-500 transition-all w-full md:w-auto md:flex-1 min-w-[220px] focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none">
                             <div className="w-12 h-12 bg-amber-500 text-white rounded-2xl flex items-center justify-center text-2xl shrink-0 shadow-md group-hover:scale-110 transition-transform">
-                                <Phone size={24} />
+                                <Phone size={24} aria-hidden="true" />
                             </div>
                             <div className="text-left">
-                                <span className="block text-[8px] font-black text-slate-400 uppercase tracking-widest">Call Us</span>
+                                <span className="block text-[8px] font-black text-slate-500 uppercase tracking-widest">Call Us</span>
                                 <span className="block text-xs font-black text-[#1A1F2C] tracking-tight">{PHONE_DISPLAY}</span>
                             </div>
                         </a>
-                        <a href="mailto:info@gradwayedu.com" className="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg flex items-center gap-4 group hover:border-indigo-600 transition-all w-full md:w-auto md:flex-1 min-w-[220px]">
+                        <a href="mailto:info@gradwayedu.com" aria-label="Send email to info@gradwayedu.com" className="bg-white p-6 rounded-3xl border border-slate-100 shadow-lg flex items-center gap-4 group hover:border-indigo-600 transition-all w-full md:w-auto md:flex-1 min-w-[220px] focus-visible:ring-2 focus-visible:ring-indigo-600 focus-visible:outline-none">
                             <div className="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center text-2xl shrink-0 shadow-md group-hover:scale-110 transition-transform">
-                                <Mail size={24} />
+                                <Mail size={24} aria-hidden="true" />
                             </div>
                             <div className="text-left">
-                                <span className="block text-[8px] font-black text-slate-400 uppercase tracking-widest">Email</span>
+                                <span className="block text-[8px] font-black text-slate-500 uppercase tracking-widest">Email</span>
                                 <span className="block text-xs font-black text-[#1A1F2C] tracking-tight truncate leading-tight">info@gradwayedu.com</span>
                             </div>
                         </a>
@@ -3408,8 +3336,8 @@ const App = () => {
                     <div className="lg:w-1/3">
                         <SectionBadge text="Knowledge Base" amberOutline />
                         <h2 className="text-4xl font-black mb-6 uppercase tracking-tight leading-tight">Frequently Asked Questions</h2>
-                        <p className="text-slate-500 font-medium mb-10">Clear, student-focused answers for your migration concerns.</p>
-                        <button onClick={() => scrollToId('faq-full')} className="bg-[#1A1F2C] text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all">
+                        <p className="text-slate-600 font-medium mb-10">Clear, student-focused answers for your migration concerns.</p>
+                        <button onClick={() => scrollToId('faq-full')} className="bg-[#1A1F2C] text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:outline-none">
                             View Full FAQ
                         </button>
                     </div>
@@ -3418,16 +3346,10 @@ const App = () => {
                     </div>
                 </div>
             </section>
+            </main>
             
             <Footer onModal={setModal} onNavigate={scrollToId} onSetView={setView} />
-            <ChatWidget chatOpen={chatOpen} setChatOpen={setChatOpen} chatMessage={chatMessage} setChatMessage={setChatMessage} chatHistory={chatHistory} isTyping={isTyping} handleChatSubmit={handleChatSubmit} onSave={handleSaveChat} onHistory={() => setHistoryModalOpen(true)} />
             <AnimatePresence>{modal !== 'none' && <LegalModal type={modal} onClose={() => setModal('none')} />}</AnimatePresence>
-            <AnimatePresence>{historyModalOpen && <HistoryModal isOpen={historyModalOpen} onClose={() => setHistoryModalOpen(false)} onRestore={handleRestoreChat} />}</AnimatePresence>
-            <div className="fixed bottom-6 right-6 z-[250]">
-                <button onClick={() => setChatOpen(!chatOpen)} className="w-14 h-14 bg-amber-500 rounded-full shadow-lg flex items-center justify-center text-[#1A1F2C] text-2xl hover:scale-110 transition-all">
-                    <Headset size={24} />
-                </button>
-            </div>
         </div>
     );
 };

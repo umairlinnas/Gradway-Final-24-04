@@ -1,5 +1,6 @@
 {
   "name": "Gradway - Study Abroad Simplified Final",
-  "description": "A comprehensive education consultancy platform helping students migrate and study abroad with AI-powered assistance.",
-  "requestFramePermissions": []
+  "description": "A comprehensive education consultancy platform helping Sri Lankan students study abroad in the UK, Germany, Canada, Australia, France, and beyond.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
