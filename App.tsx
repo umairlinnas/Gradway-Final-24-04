@@ -2613,13 +2613,13 @@ const App = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
         
-        let title = "Gradway | Study Abroad & Migration Simplified - Colombo, Sri Lanka";
-        let desc = "Gradway (Pvt) Ltd is Sri Lanka's leading study abroad consultancy. Get expert guidance for university admissions, student visas, scholarships, and post-study work in the UK, Germany, Canada, Australia, France, and the USA.";
+        let title = "Gradway | Study Abroad & Visa Consultancy - Colombo, Sri Lanka";
+        let desc = "Gradway (Pvt) Ltd is Sri Lanka's leading study abroad consultancy. Get expert guidance for university admissions, student visas, scholarships, and post-study work in the UK, Germany, Canada, Australia, France, and the USA and many more.";
         let canonical = "https://gradwayedu.com/";
 
         if (view === 'destination-uk') {
             title = "Study in the UK - Universities, Visas & Scholarships | Gradway";
-            desc = "Explore top UK universities, 2-year post-study work visas (Graduate Route), admission criteria, and scholarship guidance from Gradway Colombo.";
+            desc = "Explore top UK universities, With post-study work visas (Graduate Route), admission criteria, and scholarship guidance from Gradway Colombo.";
             canonical = "https://gradwayedu.com/#uk";
         } else if (view === 'destination-germany') {
             title = "Study in Germany - Free Tuition & English Programs | Gradway";
