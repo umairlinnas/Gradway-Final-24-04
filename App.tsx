@@ -2599,21 +2599,47 @@ const App = () => {
             ) {
                 setView('about-gradway-srilanka');
             }
-            else if (hash === '#uk')
+            else if (hash === '#uk' || pathname === '/uk' || pathname === '/study-in-uk' || pathname === '/destinations/uk')
                 setView('destination-uk');
-            else if (hash === '#germany')
+            else if (hash === '#germany' || pathname === '/germany' || pathname === '/study-in-germany' || pathname === '/destinations/germany')
                 setView('destination-germany');
-            else if (hash === '#france')
+            else if (hash === '#france' || pathname === '/france' || pathname === '/study-in-france' || pathname === '/destinations/france')
                 setView('destination-france');
+            else if (hash === '#canada' || pathname === '/canada' || pathname === '/destinations/canada')
+                setView('destination-canada');
+            else if (hash === '#australia' || pathname === '/australia' || pathname === '/destinations/australia')
+                setView('destination-australia');
+            else if (hash === '#ireland' || pathname === '/ireland' || pathname === '/destinations/ireland')
+                setView('destination-ireland');
+            else if (hash === '#switzerland' || pathname === '/switzerland' || pathname === '/destinations/switzerland')
+                setView('destination-switzerland');
+            else if (hash === '#malta' || pathname === '/malta' || pathname === '/destinations/malta')
+                setView('destination-malta');
+            else if (hash === '#new-zealand' || pathname === '/new-zealand' || pathname === '/destinations/new-zealand')
+                setView('destination-new-zealand');
+            else if (hash === '#singapore' || pathname === '/singapore' || pathname === '/destinations/singapore')
+                setView('destination-singapore');
+            else if (hash === '#malaysia' || pathname === '/malaysia' || pathname === '/destinations/malaysia')
+                setView('destination-malaysia');
+            else if (hash === '#south-korea' || pathname === '/south-korea' || pathname === '/destinations/south-korea')
+                setView('destination-south-korea');
+            else if (hash === '#uae' || pathname === '/uae' || pathname === '/destinations/uae')
+                setView('destination-uae');
+            else if (hash === '#usa' || pathname === '/usa' || pathname === '/destinations/usa')
+                setView('destination-usa');
             else if (hash.startsWith('#destination-'))
                 setView(hash.substring(1));
-            else if (hash === '#careers')
+            else if (pathname.startsWith('/destinations/')) {
+                const cId = pathname.replace('/destinations/', '');
+                setView('destination-' + cId);
+            }
+            else if (hash === '#careers' || pathname === '/careers')
                 setView('careers');
-            else if (hash === '#faq-full')
+            else if (hash === '#faq-full' || hash === '#faq' || pathname === '/faq' || pathname === '/faq-full')
                 setView('faq-full');
-            else if (hash === '#services-full')
+            else if (hash === '#services-full' || hash === '#services' || pathname === '/services' || pathname === '/services-full')
                 setView('services-full');
-            else if (hash === '#partner')
+            else if (hash === '#partner' || pathname === '/partner')
                 setView('partner');
             else
                 setView('main');
@@ -2641,38 +2667,78 @@ const App = () => {
         } else if (view === 'destination-uk') {
             title = "Study in the UK - Universities, Visas & Scholarships | Gradway";
             desc = "Explore top UK universities, With post-study work visas (Graduate Route), admission criteria, and scholarship guidance from Gradway Colombo.";
-            canonical = "https://gradwayedu.com/#uk";
+            canonical = "https://gradwayedu.com/destinations/uk/";
         } else if (view === 'destination-germany') {
             title = "Study in Germany - Free Tuition & English Programs | Gradway";
             desc = "Discover tuition-free public universities in Germany, English-taught STEM courses, APS guidance, and 18-month post-study work rights with Gradway.";
-            canonical = "https://gradwayedu.com/#germany";
+            canonical = "https://gradwayedu.com/destinations/germany/";
         } else if (view === 'destination-france') {
             title = "Study in France - Affordable European Degrees | Gradway";
             desc = "Apply for English-taught bachelor's and master's degrees in France with Schengen access, work rights, and visa support from Gradway.";
-            canonical = "https://gradwayedu.com/#france";
+            canonical = "https://gradwayedu.com/destinations/france/";
+        } else if (view === 'destination-canada') {
+            title = "Study in Canada - Admissions, Study Permits & PGWP | Gradway";
+            desc = "Apply to top Canadian universities and colleges with PGWP work permits up to 3 years. Complete visa guidance from Gradway Colombo.";
+            canonical = "https://gradwayedu.com/destinations/canada/";
+        } else if (view === 'destination-australia') {
+            title = "Study in Australia - Top Universities & Subclass 500 Visa | Gradway";
+            desc = "Explore Australian Group of Eight and leading universities with post-study work rights. Expert visa processing from Gradway Colombo.";
+            canonical = "https://gradwayedu.com/destinations/australia/";
+        } else if (view === 'destination-ireland') {
+            title = "Study in Ireland - Tech Hub Education & Graduate Visa | Gradway";
+            desc = "Discover top Irish universities in Dublin, Cork, and Galway with 2-year post-study graduate work visa rights.";
+            canonical = "https://gradwayedu.com/destinations/ireland/";
+        } else if (view === 'destination-switzerland') {
+            title = "Study in Switzerland - World-Class Hospitality & Business | Gradway";
+            desc = "Experience premier hospitality, luxury brand management, and business schools in Switzerland with Gradway.";
+            canonical = "https://gradwayedu.com/destinations/switzerland/";
+        } else if (view === 'destination-malta') {
+            title = "Study in Malta - Affordable English Education in Europe | Gradway";
+            desc = "Study accredited English-taught degrees in the Schengen Mediterranean hub of Malta with affordable living costs.";
+            canonical = "https://gradwayedu.com/destinations/malta/";
+        } else if (view === 'destination-new-zealand') {
+            title = "Study in New Zealand - High Quality Degrees & Post-Study Work | Gradway";
+            desc = "Achieve your academic dreams in safe, scenic New Zealand with accredited universities and post-study work rights.";
+            canonical = "https://gradwayedu.com/destinations/new-zealand/";
+        } else if (view === 'destination-singapore') {
+            title = "Study in Singapore - Global Business Hub Education | Gradway";
+            desc = "World-renowned international branch campuses and universities in Singapore with global post-study career opportunities.";
+            canonical = "https://gradwayedu.com/destinations/singapore/";
+        } else if (view === 'destination-malaysia') {
+            title = "Study in Malaysia - Affordable UK & Australian Twinning Degrees | Gradway";
+            desc = "Affordable higher education with direct UK & Australian university twinning programs in Malaysia.";
+            canonical = "https://gradwayedu.com/destinations/malaysia/";
+        } else if (view === 'destination-south-korea') {
+            title = "Study in South Korea - Innovation & STEM Scholarships | Gradway";
+            desc = "Leading STEM, AI, and business programs in South Korea with generous university scholarship opportunities.";
+            canonical = "https://gradwayedu.com/destinations/south-korea/";
+        } else if (view === 'destination-uae') {
+            title = "Study in UAE - Dubai Branch Campuses & Global Networking | Gradway";
+            desc = "Top UK, Australian, and global university branch campuses in Dubai with work authorization and modern student life.";
+            canonical = "https://gradwayedu.com/destinations/uae/";
         } else if (view === 'faq-full') {
             title = "Frequently Asked Questions (FAQ) - Study Abroad & Visas | Gradway";
             desc = "Get clear, authoritative answers to top questions on studying abroad, visa processing times, university requirements, and costs.";
-            canonical = "https://gradwayedu.com/#faq-full";
+            canonical = "https://gradwayedu.com/faq/";
         } else if (view === 'services-full') {
             title = "Our Services - Admissions, Visas, Scholarships & Briefings | Gradway";
             desc = "End-to-end international education services: university mapping, SOP review, financial filing, scholarship discovery, and mock visa interviews.";
-            canonical = "https://gradwayedu.com/#services-full";
+            canonical = "https://gradwayedu.com/services/";
         } else if (view === 'partner') {
             title = "Partner With Us - Institutional Collaborations | Gradway";
             desc = "Partner with Gradway (Pvt) Ltd to recruit high-achieving Sri Lankan and South Asian students for global universities and colleges.";
-            canonical = "https://gradwayedu.com/#partner";
+            canonical = "https://gradwayedu.com/partner/";
         } else if (view === 'careers') {
             title = "Careers at Gradway - Join Our Colombo Education Team";
             desc = "Explore exciting career and counselor opportunities at Gradway Colombo. Help students achieve global academic dreams.";
-            canonical = "https://gradwayedu.com/#careers";
+            canonical = "https://gradwayedu.com/careers/";
         } else if (view.startsWith('destination-')) {
             const countryId = view.replace('destination-', '');
             const countryData = otherDestinationsData[countryId];
             if (countryData) {
                 title = `Study in ${countryData.name} - University Admissions & Visas | Gradway`;
                 desc = `Comprehensive guide to studying in ${countryData.name}. Get personalized university application and visa processing support from Gradway Colombo.`;
-                canonical = `https://gradwayedu.com/#destination-${countryId}`;
+                canonical = `https://gradwayedu.com/destinations/${countryId}/`;
             }
         }
 

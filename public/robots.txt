@@ -1,27 +1,45 @@
 User-agent: *
 Allow: /
+Disallow: /api/
 
-# Dedicated Directives for AI, LLM & Search Engine Crawlers (Generative Engine Optimization)
-User-agent: GPTBot
+# Explicit Directives for Search Engine Crawlers
+User-agent: Googlebot
 Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
+Disallow: /api/
 
 User-agent: Google-Extended
 Allow: /
 
-User-agent: Googlebot
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-News
 Allow: /
 
 User-agent: Bingbot
 Allow: /
+Disallow: /api/
+
+# Explicit Directives for Generative AI & LLM Crawlers
+User-agent: GPTBot
+Allow: /
+Disallow: /api/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /api/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /api/
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /api/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /api/
 
 User-agent: Applebot
 Allow: /

@@ -14,12 +14,16 @@
 ## Key Pages & Navigation
 - **Homepage**: https://gradwayedu.com/
 - **About Gradway**: https://gradwayedu.com/about-gradway-srilanka/
-- **All Study Destinations**: https://gradwayedu.com/#destinations
-- **United Kingdom Guide**: https://gradwayedu.com/#uk
-- **Germany Free Tuition Guide**: https://gradwayedu.com/#germany
-- **France Guide**: https://gradwayedu.com/#france
-- **Our Services**: https://gradwayedu.com/#services-full
-- **Institutional Partnerships**: https://gradwayedu.com/#partner
+- **United Kingdom Guide**: https://gradwayedu.com/destinations/uk/
+- **Germany Free Tuition Guide**: https://gradwayedu.com/destinations/germany/
+- **France Guide**: https://gradwayedu.com/destinations/france/
+- **Canada Guide**: https://gradwayedu.com/destinations/canada/
+- **Australia Guide**: https://gradwayedu.com/destinations/australia/
+- **Ireland Guide**: https://gradwayedu.com/destinations/ireland/
+- **Our Services**: https://gradwayedu.com/services/
+- **Frequently Asked Questions**: https://gradwayedu.com/faq/
+- **Institutional Partnerships**: https://gradwayedu.com/partner/
+- **Careers**: https://gradwayedu.com/careers/
 
 ## Primary Study Destinations & Key Highlights
 
