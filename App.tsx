@@ -7,6 +7,7 @@ import { BentoExperience, GermanyBentoExperience, FranceBentoExperience, Ireland
 import { CanadaBentoExperience } from '@/components/ui/canada-bento-grid';
 import { GenericDestinationPage } from '@/components/pages/GenericDestinationPage';
 import { GenericBentoExperience } from '@/components/pages/GenericBentoExperience';
+import { AboutUsPage } from '@/components/pages/AboutUsPage';
 import { otherDestinationsData } from '@/data/destinations';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
 import { motion, AnimatePresence } from 'motion/react';
@@ -977,7 +978,7 @@ const Footer = ({ onModal, onNavigate, onSetView }: any) => {
                 <div>
                     <h4 className="text-sm font-black uppercase tracking-widest mb-8 text-white">Quick Links</h4>
                     <ul className="space-y-4 text-slate-400 text-sm font-bold uppercase tracking-wide">
-                        <li className="hover:text-white transition-colors cursor-pointer uppercase" onClick={() => onNavigate('aboutus')}>About Us</li>
+                        <li className="hover:text-white transition-colors cursor-pointer uppercase" onClick={() => onNavigate('about-gradway-srilanka')}>About Us</li>
                         <li className="hover:text-white transition-colors cursor-pointer uppercase" onClick={() => onNavigate('destinations')}>Destinations</li>
                         <li className="hover:text-white transition-colors cursor-pointer uppercase" onClick={() => onSetView('faq-full')}>FAQ</li>
                         <li className="hover:text-white transition-colors cursor-pointer uppercase" onClick={() => onSetView('careers')}>Careers</li>
@@ -2582,11 +2583,23 @@ const App = () => {
         };
     }, []);
 
-    // --- HASH ROUTING LOGIC ---
+    // --- HASH & PATH ROUTING LOGIC ---
     useEffect(() => {
-        const handleHashChange = () => {
+        const handleRouteChange = () => {
             const hash = window.location.hash;
-            if (hash === '#uk')
+            const pathname = window.location.pathname.replace(/\/$/, '');
+
+            if (
+                pathname === '/about-gradway-srilanka' || 
+                pathname === '/about' || 
+                pathname === '/about-us' || 
+                hash === '#about-gradway-srilanka' || 
+                hash === '#about' || 
+                hash === '#about-us'
+            ) {
+                setView('about-gradway-srilanka');
+            }
+            else if (hash === '#uk')
                 setView('destination-uk');
             else if (hash === '#germany')
                 setView('destination-germany');
@@ -2605,9 +2618,13 @@ const App = () => {
             else
                 setView('main');
         };
-        window.addEventListener('hashchange', handleHashChange);
-        handleHashChange();
-        return () => window.removeEventListener('hashchange', handleHashChange);
+        window.addEventListener('hashchange', handleRouteChange);
+        window.addEventListener('popstate', handleRouteChange);
+        handleRouteChange();
+        return () => {
+            window.removeEventListener('hashchange', handleRouteChange);
+            window.removeEventListener('popstate', handleRouteChange);
+        };
     }, []);
 
     useEffect(() => {
@@ -2617,7 +2634,11 @@ const App = () => {
         let desc = "Gradway (Pvt) Ltd is Sri Lanka's leading study abroad consultancy. Get expert guidance for university admissions, student visas, scholarships, and post-study work in the UK, Germany, Canada, Australia, France, and the USA and many more.";
         let canonical = "https://gradwayedu.com/";
 
-        if (view === 'destination-uk') {
+        if (view === 'about-gradway-srilanka') {
+            title = "About Gradway - Study Abroad & Visa Consultancy | Colombo, Sri Lanka";
+            desc = "Learn about Gradway (Pvt) Ltd, our mission, vision, world map of study destinations, and why ambitious Sri Lankan students choose our ethical education consultancy.";
+            canonical = "https://gradwayedu.com/about-gradway-srilanka/";
+        } else if (view === 'destination-uk') {
             title = "Study in the UK - Universities, Visas & Scholarships | Gradway";
             desc = "Explore top UK universities, With post-study work visas (Graduate Route), admission criteria, and scholarship guidance from Gradway Colombo.";
             canonical = "https://gradwayedu.com/#uk";
@@ -2751,6 +2772,10 @@ const App = () => {
                     });
                 }
             }, 100);
+            return;
+        }
+        if (id === 'about-gradway-srilanka' || id === 'about' || id === 'about-us' || id === 'about-page') {
+            window.location.hash = '#about-gradway-srilanka';
             return;
         }
         if (id === 'careers') {
@@ -2980,6 +3005,20 @@ const App = () => {
             );
         }
     }
+    if (view === 'about-gradway-srilanka') {
+        return (
+            <div className="min-h-screen">
+                <ScrollNavigation logoUrl={LOGO_URL} onNavigate={scrollToId} />
+                <AboutUsPage 
+                    onNavigate={scrollToId} 
+                    onSetView={setView} 
+                    onContact={() => scrollToId('contact')} 
+                />
+                <Footer onModal={setModal} onNavigate={scrollToId} onSetView={setView} />
+                <AnimatePresence>{modal !== 'none' && <LegalModal type={modal} onClose={() => setModal('none')} />}</AnimatePresence>
+            </div>
+        );
+    }
     if (view === 'partner') {
          return (
             <div className="min-h-screen">
@@ -3064,44 +3103,22 @@ const App = () => {
                     </div>
                     <div className="lg:w-1/2">
                          <SectionBadge text="About us" amberOutline />
-                         <h2 className="text-4xl md:text-5xl font-black text-[#1A1F2C] mb-8 leading-tight tracking-tight">Guiding Ambitions Beyond Borders</h2>
-                         <p className="text-slate-600 text-lg leading-relaxed mb-12 font-medium">Gradway (Pvt) Limited is a premier education consultancy based in Colombo. We bridge the gap between ambitious Sri Lankan students and world-class international institutions through transparent and expert partnerships.</p>
-                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                             <motion.div 
-                                data-scroll-hit="mission-card" 
-                                className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100 cursor-default"
-                                whileHover={{ 
-                                    scale: 1.05, 
-                                    backgroundColor: "#ffffff",
-                                    borderColor: "rgb(251 191 36)", // amber-400
-                                    boxShadow: "0 0 20px rgba(251, 191, 36, 0.4)" // Amber glow
-                                }}
-                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                         <h2 className="text-4xl md:text-5xl font-black text-[#1A1F2C] mb-6 leading-tight tracking-tight">Guiding Ambitions Beyond Borders</h2>
+                         <p className="text-slate-600 text-base md:text-lg leading-relaxed mb-8 font-medium">
+                             Gradway (Pvt) Limited is Sri Lanka's leading study abroad and education visa consultancy based in Colombo. We connect ambitious students with over 450+ world-class universities across the UK, Germany, Canada, Australia, France, and beyond through transparent, ethical, and personalized guidance.
+                         </p>
+                         <div>
+                             <a 
+                                 href="/about-gradway-srilanka/" 
+                                 onClick={(e) => {
+                                     e.preventDefault();
+                                     scrollToId('about-gradway-srilanka');
+                                 }} 
+                                 className="inline-flex items-center gap-3 bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 px-8 py-4 rounded-full font-black text-[11px] uppercase tracking-widest shadow-xl shadow-amber-400/20 hover:scale-105 active:scale-95 transition-all group"
+                                 id="btn-homepage-learn-more-about"
                              >
-                                 <div className="w-12 h-12 bg-amber-500 text-white rounded-xl flex items-center justify-center mb-6 shadow-lg">
-                                     <Target size={20} />
-                                 </div>
-                                 <h4 className="font-black text-[#1A1F2C] mb-2 uppercase text-xs tracking-widest">Our Mission</h4>
-                                 <p className="text-xs text-slate-500 leading-relaxed font-medium italic">"To provide ethical, transparent, and personalized guidance that turns global education dreams into reality."</p>
-                             </motion.div>
-                             
-                             <motion.div 
-                                data-scroll-hit="vision-card" 
-                                className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100 cursor-default"
-                                whileHover={{ 
-                                    scale: 1.05, 
-                                    backgroundColor: "#ffffff",
-                                    borderColor: "rgb(79 70 229)", // indigo-600
-                                    boxShadow: "0 0 20px rgba(79, 70, 229, 0.4)" // Indigo glow
-                                }}
-                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                             >
-                                 <div className="w-12 h-12 bg-indigo-600 text-white rounded-xl flex items-center justify-center mb-6 shadow-lg">
-                                     <Compass size={20} />
-                                 </div>
-                                 <h4 className="font-black text-[#1A1F2C] mb-2 uppercase text-xs tracking-widest">Our Vision</h4>
-                                 <p className="text-xs text-slate-500 leading-relaxed font-medium italic">"To become the premier bridge between Sri Lankan talent and world-class academic institutions."</p>
-                             </motion.div>
+                                 Learn more about us <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                             </a>
                          </div>
                     </div>
                 </div>

@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gradway - Interactive Global Footprint Globe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: #fafafa;
+      color: #0f172a;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #b45309;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f59e0b;
+      box-shadow: 0 0 10px #f59e0b;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.5; }
+    }
+
+    h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      text-align: center;
+      margin-bottom: 12px;
+      color: #1a1f2c;
+    }
+
+    p.subtitle {
+      font-size: 14px;
+      color: #64748b;
+      text-align: center;
+      max-width: 680px;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+
+    .country-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      max-width: 800px;
+    }
+
+    .country-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .country-pill:hover, .country-pill.active {
+      background: linear-gradient(135deg, #f59e0b, #eab308);
+      border-color: #f59e0b;
+      color: #0f172a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+    }
+
+    .country-pill img {
+      width: 16px;
+      height: 12px;
+      border-radius: 2px;
+      object-fit: cover;
+    }
+
+    /* Globe Canvas Container */
+    .globe-stage {
+      position: relative;
+      width: 100%;
+      max-width: 580px;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      user-select: none;
+      touch-action: none;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 3rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+    }
+
+    .globe-aura {
+      position: absolute;
+      width: 78%;
+      height: 78%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 45% 42%, rgba(245, 158, 11, 0.18) 0%, rgba(251, 191, 36, 0.10) 45%, rgba(56, 189, 248, 0.08) 70%, transparent 85%);
+      filter: blur(35px);
+      pointer-events: none;
+    }
+
+    .globe-rim {
+      position: absolute;
+      width: 72%;
+      height: 72%;
+      border-radius: 50%;
+      box-shadow: inset 0 0 35px rgba(245, 158, 11, 0.08), 0 0 25px rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      pointer-events: none;
+    }
+
+    canvas {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+    }
+
+    canvas:active {
+      cursor: grabbing;
+    }
+
+    /* Overlay for Pins */
+    .pins-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .globe-pin {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      pointer-events: auto;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.08s ease-out;
+    }
+
+    .pin-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      white-space: nowrap;
+    }
+
+    .globe-pin:hover .pin-badge, .globe-pin.selected .pin-badge {
+      background: #fbbf24;
+      border-color: #d97706;
+      transform: scale(1.1);
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+    }
+
+    .pin-badge img {
+      width: 14px;
+      height: 10px;
+      border-radius: 2px;
+      object-fit: cover;
+    }
+
+    .pin-name {
+      font-size: 10px;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .pin-marker {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+    }
+
+    /* Detail Modal Card */
+    .country-card {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 600px;
+      background: #ffffff;
+      border: 2px solid #fde68a;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border-radius: 24px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .country-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-flag {
+      width: 44px;
+      height: 32px;
+      border-radius: 6px;
+      object-fit: cover;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+    }
+
+    .card-name {
+      font-size: 20px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: #1a1f2c;
+    }
+
+    .card-tag {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+      width: fit-content;
+      margin-top: 2px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #475569;
+      font-weight: 500;
+    }
+
+    .card-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .stat-box {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 13px;
+      font-weight: 900;
+      color: #d97706;
+    }
+
+    .stat-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    .card-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-action {
+      background: linear-gradient(135deg, #f59e0b, #eab308);
+      color: #0f172a;
+      padding: 10px 22px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+      text-decoration: none;
+    }
+
+    .hints {
+      margin-top: 16px;
+      font-size: 11px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header-badge">
+      <span class="pulse-dot"></span>
+      Interactive Global Footprint
+    </div>
+    <h1>Global Study Destinations</h1>
+    <p class="subtitle">
+      Explore our partner universities worldwide. Drag in any direction to rotate the globe in 3D, and click any country pin to preview admission pathways and post-study work rights.
+    </p>
+
+    <!-- Quick destination selectors -->
+    <div class="country-pills" id="pillsContainer"></div>
+
+    <!-- Globe Container -->
+    <div class="globe-stage" id="globeStage">
+      <div class="globe-aura"></div>
+      <div class="globe-rim"></div>
+      <canvas id="globeCanvas"></canvas>
+      <div class="pins-layer" id="pinsLayer"></div>
+    </div>
+
+    <!-- Active Country Information Card -->
+    <div class="country-card" id="countryCard">
+      <div class="country-card-header">
+        <div class="card-title-group">
+          <img class="card-flag" id="cardFlag" src="https://flagcdn.com/w80/gb.png" alt="Country Flag">
+          <div>
+            <div class="card-name" id="cardName">United Kingdom</div>
+            <div class="card-tag" id="cardTag">Russell Group & Modern Unis</div>
+          </div>
+        </div>
+      </div>
+      <p class="card-desc" id="cardDesc">
+        2-Year Graduate Route post-study work visa, 1-year fast-track Masters programs, and direct partnerships with prestigious Russell Group universities across England, Scotland, and Wales.
+      </p>
+      <div class="card-stats">
+        <div class="stat-box">
+          <div class="stat-value" id="cardVisa">2-Year PSW</div>
+          <div class="stat-label">Work Visa</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="cardUnis">150+ Unis</div>
+          <div class="stat-label">Institutions</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="cardIntakes">Sep & Jan</div>
+          <div class="stat-label">Intakes</div>
+        </div>
+      </div>
+      <div class="card-actions">
+        <a href="/#uk" class="btn-action" id="cardBtn">
+          Explore Destination Guide &rarr;
+        </a>
+      </div>
+    </div>
+
+    <div class="hints">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+      </svg>
+      Rotate in all directions • Pins always stand upright • Select pin for details
+    </div>
+  </div>
+
+  <script type="module">
+    import { isEarthLand } from './data/earthLandMask.ts';
+
+    const COUNTRIES = [
+      {
+        id: 'uk',
+        name: 'United Kingdom',
+        flag: 'https://flagcdn.com/w80/gb.png',
+        lat: 53.5,
+        lon: -2.0,
+        tag: 'Education Excellence',
+        desc: 'Graduate Route post-study work visa, 1-year fast-track Masters programs, and partnerships with prestigious UK universities.',
+        visa: '2-Year PSW',
+        unis: '150+',
+        intakes: 'Sep, Jan & May',
+        route: '/#uk'
+      },
+      {
+        id: 'germany',
+        name: 'Germany',
+        flag: 'https://flagcdn.com/w80/de.png',
+        lat: 51.2,
+        lon: 10.4,
+        tag: 'German Engineering',
+        desc: 'Free or low-cost tuition at world-renowned public universities, job seeker visa, and thriving industrial STEM hubs.',
+        visa: 'Job Seeker',
+        unis: '80+',
+        intakes: 'Oct & Apr',
+        route: '/#germany'
+      },
+      {
+        id: 'france',
+        name: 'France',
+        flag: 'https://flagcdn.com/w80/fr.png',
+        lat: 46.5,
+        lon: 2.5,
+        tag: 'Bienvenue en France',
+        desc: 'English-taught Masters, Schengen mobility across Europe, subsidized student housing (CAF), and post-study work authorization.',
+        visa: 'APS Visa',
+        unis: '60+',
+        intakes: 'Sep & Feb',
+        route: '/#france'
+      },
+      {
+        id: 'ireland',
+        name: 'Ireland',
+        flag: 'https://flagcdn.com/w80/ie.png',
+        lat: 53.4,
+        lon: -8.2,
+        tag: 'European Tech Capital',
+        desc: 'English-speaking EU hub, home to Google, Meta, and Apple European headquarters. and Graduate Scheme work visa.',
+        visa: 'Graduate',
+        unis: '35+',
+        intakes: 'Sep & Jan',
+        route: '/#destinations'
+      },
+      {
+        id: 'switzerland',
+        name: 'Switzerland',
+        flag: 'https://flagcdn.com/w80/ch.png',
+        lat: 46.8,
+        lon: 8.2,
+        tag: 'Hospitality & Banking',
+        desc: 'World-ranked hospitality management schools, paid internships during study, and world-class financial research centers.',
+        visa: 'Post-Study Permit',
+        unis: '18+',
+        intakes: 'Quarterly',
+        route: '/#destinations'
+      },
+      {
+        id: 'malta',
+        name: 'Malta',
+        flag: 'https://flagcdn.com/w80/mt.png',
+        lat: 35.9,
+        lon: 14.4,
+        tag: 'Affordable EU Education',
+        desc: 'English-speaking Mediterranean destination with affordable living, accredited UK-twinning degrees, and pathway visas.',
+        visa: 'EU Schengen Entry',
+        unis: '13+',
+        intakes: 'Oct & Feb',
+        route: '/#destinations'
+      },
+      {
+        id: 'canada',
+        name: 'Canada',
+        flag: 'https://flagcdn.com/w80/ca.png',
+        lat: 52.0,
+        lon: -100.0,
+        tag: 'Western Living',
+        desc: 'Designated Learning Institutions (DLI) offering co-op work experience, up to 3-year Post-Graduation Work Permits, and high safety standards.',
+        visa: 'Up to 3-Yr PGWP',
+        unis: '100+',
+        intakes: 'Sep, Jan, May',
+        route: '/#canada'
+      },
+      {
+        id: 'australia',
+        name: 'Australia',
+        flag: 'https://flagcdn.com/w80/au.png',
+        lat: -25.2,
+        lon: 133.7,
+        tag: 'Study in Australia',
+        desc: 'Subclass 500 visa pathways, post-study work rights, high minimum wage, and world-class universities in Sydney, Melbourne, and Brisbane.',
+        visa: '2-4Y PSW',
+        unis: '40+',
+        intakes: 'Feb & Jul',
+        route: '/#australia'
+      },
+      {
+        id: 'new-zealand',
+        name: 'New Zealand',
+        flag: 'https://flagcdn.com/w80/nz.png',
+        lat: -41.2,
+        lon: 174.0,
+        tag: 'Innovation & Research',
+        desc: 'All 8 state universities ranked in the top 3% globally. Up to 3-year post-study work visa and excellent work-life balance.',
+        visa: '3-Year PSW',
+        unis: '820+',
+        intakes: 'Feb & Jul',
+        route: '/#destinations'
+      },
+      {
+        id: 'singapore',
+        name: 'Singapore',
+        flag: 'https://flagcdn.com/w80/sg.png',
+        lat: 1.35,
+        lon: 103.8,
+        tag: 'Asian Financial Hub',
+        desc: 'Top global branch campuses, unparalleled safety, high employment rate in banking, tech, and logistics.',
+        visa: 'Graduate Pass',
+        unis: '25+',
+        intakes: 'Mar, Jul, Nov',
+        route: '/#destinations'
+      },
+      {
+        id: 'malaysia',
+        name: 'Malaysia',
+        flag: 'https://flagcdn.com/w80/my.png',
+        lat: 4.2,
+        lon: 101.9,
+        tag: 'Study in Malaysia',
+        desc: 'Low tuition and living expenses while graduating with identical British or Australian degrees from accredited branch campuses.',
+        visa: 'Graduate Pass',
+        unis: '20+',
+        intakes: 'Flexible',
+        route: '/#destinations'
+      },
+      {
+        id: 'south-korea',
+        name: 'South Korea',
+        flag: 'https://flagcdn.com/w80/kr.png',
+        lat: 36.0,
+        lon: 127.8,
+        tag: 'Study in South Korea',
+        desc: 'Leading STEM and innovation hubs, and cutting-edge robotics & AI programs.',
+        visa: 'D-2 & D-10 Visas',
+        unis: '15+',
+        intakes: 'Mar & Sep',
+        route: '/#destinations'
+      },
+      {
+        id: 'uae',
+        name: 'UAE (Dubai)',
+        flag: 'https://flagcdn.com/w80/ae.png',
+        lat: 25.2,
+        lon: 55.3,
+        tag: 'Global Gateway & Tax-Free Hub',
+        desc: 'Study at top UK, US, and Australian universities in Dubai Knowledge Park with simplified visa processing and tax-free jobs.',
+        visa: 'NOC / Work Visa',
+        unis: '30+',
+        intakes: 'Sep & Jan',
+        route: '/#destinations'
+      },
+      {
+        id: 'srilanka',
+        name: 'Sri Lanka (HQ)',
+        flag: 'https://flagcdn.com/w80/lk.png',
+        lat: 6.93,
+        lon: 79.85,
+        tag: 'Gradway Headquarters',
+        desc: 'Gradway Head Office in Colombo 03. Direct student counseling, visa compliance audits, and global university liaisons.',
+        visa: 'Headquarters',
+        unis: 'Colombo Office',
+        intakes: 'Year-Round',
+        route: '/#contact',
+        isHQ: true
+      }
+    ];
+
+    // Compute REAL Earth Land Dots using real Earth land bitmask
+    const CANDIDATES = 8000;
+    const keptPoints = [];
+
+    for (let i = 0; i < CANDIDATES; i++) {
+      const y = 1 - (i / CANDIDATES) * 2;
+      const r = Math.sqrt(Math.max(0, 1 - y * y));
+      const theta = (i * 2.39996323) % (Math.PI * 2);
+
+      const lonRad = theta - Math.PI;
+      const latRad = Math.asin(Math.max(-1, Math.min(1, y)));
+
+      const lonDeg = (lonRad * 180) / Math.PI;
+      const latDeg = (latRad * 180) / Math.PI;
+
+      if (isEarthLand(lonDeg, latDeg)) {
+        const px = Math.sin(lonRad) * r;
+        const py = y;
+        const pz = Math.cos(lonRad) * r;
+
+        keptPoints.push({
+          x: px,
+          y: py,
+          z: pz
+        });
+      }
+    }
+
+    // Extra territory points for key islands
+    const extraTerritories = [
+      [79.86, 6.93], [80.64, 7.29], [80.22, 6.05], [80.01, 9.66], [81.23, 8.58],
+      [174.76, -36.85], [174.78, -41.29], [172.64, -43.53], [170.50, -45.87],
+      [-0.12, 51.5], [-2.2, 53.5], [-3.2, 55.9], [-6.26, 53.3],
+      [14.45, 35.90], [103.82, 1.35]
+    ];
+    for (const [lonDeg, latDeg] of extraTerritories) {
+      const latRad = (latDeg * Math.PI) / 180;
+      const lonRad = (lonDeg * Math.PI) / 180;
+      const y = Math.sin(latRad);
+      const r = Math.cos(latRad);
+      keptPoints.push({
+        x: Math.sin(lonRad) * r,
+        y: y,
+        z: Math.cos(lonRad) * r
+      });
+    }
+
+    // Convert Country Lat/Lon to Sphere 3D Coordinates
+    const countryPoints = COUNTRIES.map(c => {
+      const latRad = (c.lat * Math.PI) / 180;
+      const lonRad = (c.lon * Math.PI) / 180;
+      const y = Math.sin(latRad);
+      const r = Math.cos(latRad);
+      return {
+        ...c,
+        x: Math.sin(lonRad) * r,
+        y: y,
+        z: Math.cos(lonRad) * r
+      };
+    });
+
+    const canvas = document.getElementById('globeCanvas');
+    const ctx = canvas.getContext('2d');
+    const stage = document.getElementById('globeStage');
+    const pinsLayer = document.getElementById('pinsLayer');
+
+    let width = 0, height = 0, radius = 0;
+    let yaw = 1.4;
+    let pitch = -0.18;
+    let velocityX = -0.002915;
+    let velocityY = 0;
+    const idleSpin = -0.002915;
+
+    let isDragging = false;
+    let lastX = 0, lastY = 0;
+    let selectedCountry = COUNTRIES[0];
+
+    function resize() {
+      const rect = stage.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      width = rect.width;
+      height = rect.height;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+      radius = width * 0.36;
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    const pinElements = new Map();
+
+    countryPoints.forEach(country => {
+      const pin = document.createElement('div');
+      pin.className = 'globe-pin';
+      pin.id = `pin-${country.id}`;
+
+      pin.innerHTML = `
+        <div class="pin-badge">
+          <img src="${country.flag}" alt="${country.name}">
+          <span class="pin-name">${country.name}</span>
+        </div>
+        <svg class="pin-marker" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="7" fill="${country.isHQ ? '#f59e0b' : '#d97706'}" stroke="#ffffff" stroke-width="2.5"/>
+          <circle cx="12" cy="12" r="2.5" fill="#ffffff"/>
+        </svg>
+      `;
+
+      if (country.isHQ) {
+        pin.style.pointerEvents = 'none';
+        pin.style.cursor = 'default';
+      } else {
+        pin.addEventListener('click', (e) => {
+          e.stopPropagation();
+          selectCountry(country);
+        });
+      }
+
+      pinsLayer.appendChild(pin);
+      pinElements.set(country.id, pin);
+    });
+
+    const pillsContainer = document.getElementById('pillsContainer');
+    COUNTRIES.filter(c => !c.isHQ).forEach(c => {
+      const btn = document.createElement('button');
+      btn.className = `country-pill ${c.id === selectedCountry.id ? 'active' : ''}`;
+      btn.id = `pill-${c.id}`;
+      btn.innerHTML = `<img src="${c.flag}" alt=""> ${c.name}`;
+      btn.addEventListener('click', () => {
+        selectCountry(c);
+        rotateToCountry(c);
+      });
+      pillsContainer.appendChild(btn);
+    });
+
+    function selectCountry(country) {
+      selectedCountry = country;
+      document.querySelectorAll('.country-pill').forEach(p => p.classList.remove('active'));
+      const activePill = document.getElementById(`pill-${country.id}`);
+      if (activePill) activePill.classList.add('active');
+
+      document.querySelectorAll('.globe-pin').forEach(p => p.classList.remove('selected'));
+      const activePin = pinElements.get(country.id);
+      if (activePin) activePin.classList.add('selected');
+
+      document.getElementById('cardFlag').src = country.flag;
+      document.getElementById('cardName').innerText = country.name;
+      document.getElementById('cardTag').innerText = country.tag;
+      document.getElementById('cardDesc').innerText = country.desc;
+      document.getElementById('cardVisa').innerText = country.visa;
+      document.getElementById('cardUnis').innerText = country.unis;
+      document.getElementById('cardIntakes').innerText = country.intakes;
+      document.getElementById('cardBtn').href = country.route;
+      document.getElementById('cardBtn').innerHTML = `Explore ${country.name} Guide &rarr;`;
+    }
+
+    function rotateToCountry(country) {
+      const lonRad = (country.lon * Math.PI) / 180;
+      const targetYaw = lonRad;
+      const diff = targetYaw - yaw;
+      velocityX = Math.sin(diff) * 0.08;
+    }
+
+    canvas.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      velocityX = 0;
+      velocityY = 0;
+      canvas.setPointerCapture(e.pointerId);
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
+      lastX = e.clientX;
+      lastY = e.clientY;
+
+      // Inverted so dragging right moves globe to the right
+      const dYaw = -dx * 0.005;
+      yaw += dYaw;
+      velocityX = dYaw;
+
+      const dPitch = dy * 0.005;
+      pitch = Math.max(-1.2, Math.min(1.2, pitch + dPitch));
+      velocityY = dPitch;
+    });
+
+    window.addEventListener('pointerup', () => {
+      isDragging = false;
+    });
+
+    window.addEventListener('pointercancel', () => {
+      isDragging = false;
+    });
+
+    function render() {
+      if (!isDragging) {
+        velocityY *= 0.85;
+        pitch += velocityY;
+        velocityX += (idleSpin - velocityX) * 0.03;
+        yaw += velocityX;
+      }
+
+      pitch = Math.max(-1.2, Math.min(1.2, pitch));
+
+      ctx.clearRect(0, 0, width, height);
+
+      const cx = width / 2;
+      const cy = height / 2;
+
+      const cosYaw = Math.cos(yaw);
+      const sinYaw = Math.sin(yaw);
+      const cosPitch = Math.cos(pitch);
+      const sinPitch = Math.sin(pitch);
+
+      for (let i = 0; i < keptPoints.length; i++) {
+        const p = keptPoints[i];
+
+        const x1 = p.x * cosYaw - p.z * sinYaw;
+        const y1 = p.y;
+        const z1 = p.x * sinYaw + p.z * cosYaw;
+
+        const x2 = x1;
+        const y2 = y1 * cosPitch - z1 * sinPitch;
+        const z2 = y1 * sinPitch + z1 * cosPitch;
+
+        const depth = (z2 + 1) / 2;
+        const perspective = 0.86 + depth * 0.28;
+        const screenX = cx + x2 * radius * perspective;
+        const screenY = cy - y2 * radius * perspective;
+
+        const dotRadius = (0.50 + depth * 0.90) * (width / 520);
+
+        ctx.beginPath();
+        ctx.arc(screenX, screenY, Math.max(0.7, dotRadius), 0, Math.PI * 2);
+
+        if (z2 >= 0) {
+          const alpha = 0.22 + depth * 0.78;
+          ctx.fillStyle = `rgba(217, 119, 6, ${alpha.toFixed(3)})`;
+        } else {
+          const alpha = 0.05 + depth * 0.20;
+          ctx.fillStyle = `rgba(148, 163, 184, ${alpha.toFixed(3)})`;
+        }
+        ctx.fill();
+      }
+
+      countryPoints.forEach(country => {
+        const pinEl = pinElements.get(country.id);
+        if (!pinEl) return;
+
+        const x1 = country.x * cosYaw - country.z * sinYaw;
+        const y1 = country.y;
+        const z1 = country.x * sinYaw + country.z * cosYaw;
+
+        const x2 = x1;
+        const y2 = y1 * cosPitch - z1 * sinPitch;
+        const z2 = y1 * sinPitch + z1 * cosPitch;
+
+        const depth = (z2 + 1) / 2;
+        const perspective = 0.86 + depth * 0.28;
+        const screenX = cx + x2 * radius * perspective;
+        const screenY = cy - y2 * radius * perspective;
+
+        if (z2 > 0.05) {
+          pinEl.style.display = 'flex';
+          pinEl.style.left = `${screenX}px`;
+          pinEl.style.top = `${screenY}px`;
+
+          const scale = 0.65 + depth * 0.45;
+          const opacity = Math.min(1, Math.max(0, (z2 - 0.05) / 0.45));
+          pinEl.style.transform = `translate(-50%, -100%) scale(${scale.toFixed(2)})`;
+          pinEl.style.opacity = opacity.toFixed(2);
+          pinEl.style.zIndex = Math.round(depth * 100);
+        } else {
+          pinEl.style.display = 'none';
+        }
+      });
+
+      requestAnimationFrame(render);
+    }
+
+    requestAnimationFrame(render);
+    selectCountry(COUNTRIES[0]);
+  </script>
+</body>
+</html>
